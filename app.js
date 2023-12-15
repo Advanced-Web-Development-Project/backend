@@ -1,23 +1,28 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
+const cookieParser = require('cookie-parser');
+const { requireAuth } = require('./middleware/authMiddleware');
 
 const app = express();
 
 // middleware
 app.use(express.static('public'));
-app.use(express.json()); 
+app.use(express.json());
+app.use(cookieParser());
 
 // view engine
 app.set('view engine', 'ejs');
 
 // database connection
-const dbURI = 'mongodb+srv://RedditCloneDBUser:RedditCloneSecretPassword@cluster0.oinvs5o.mongodb.net/reddit-clone';
-mongoose.connect(dbURI)
+const dbURI = process.env.MONGODB_URI;
+mongoose
+  .connect(dbURI)
   .then((result) => app.listen(3000)) // listen only after connection is successful
   .catch((err) => console.log(err));
 
 // routes
 app.get('/', (req, res) => res.render('home'));
-app.get('/smoothies', (req, res) => res.render('smoothies'));
-app.use(authRoutes); 
+app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));
+app.use(authRoutes);
