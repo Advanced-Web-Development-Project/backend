@@ -30,20 +30,12 @@ const createToken = (id) => {
   });
 };
 
-module.exports.signup_get = (req, res) => {
-  res.render('signup');
-};
-
-module.exports.login_get = (req, res) => {
-  res.render('login');
-};
-
 module.exports.signup_post = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.create({ email, password });
     const token = createToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 }); //asign jwt so that user can be logged in immediately after signing up (frontend)
     res.status(201).json({ user: user._id });
   } catch (err) {
     const errors = handleErrors(err);
@@ -61,4 +53,10 @@ module.exports.login_post = async (req, res) => {
   } catch (err) {
     res.status(401).json({ message: err.message });
   }
+};
+
+// Should implement better, more secure logout functionality.
+module.exports.logout_get = (req, res) => {
+	res.cookie('jwt', '', { maxAge: 1 }); // Can't delete the cookie from the session, so we set it to blank and expire it immediately.
+	res.status(200).json({ message: 'logged out' });
 };
