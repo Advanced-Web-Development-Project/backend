@@ -1,62 +1,59 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+const { registerSchema } = require('../services/validators');
 
-// handle errors
-const handleErrors = (err) => {
-  console.log(err.message, err.code);
-  let errors = { email: '', password: '' };
+const login = (req, res) => {
+  const token = req.user.generateJWT();
+  const userInfo = req.user.toJSON();
+  res.json({ token, userInfo });
+};
 
-  // duplicate error code
-  if (err.code === 11000) {
-    errors.email = 'This email is already registered';
-    return errors;
+const register = async (req, res, next) => {
+  const { error } = registerSchema.validate(req.body, { abortEarly: false });
+  if (error) {
+    const errorMessages = error.details.reduce((acc, detail) => {
+      // Assuming 'detail.path' is an array with a single element - the field name
+      acc[detail.path[0]] = detail.message.replace(/"/g, ''); // replace for better formatting of errors
+      return acc;
+    }, {});
+    return res.status(422).json({ errors: errorMessages }); // https://joi.dev/api/?v=17.9.1#validationerror
   }
 
-  // validation errors
-  if (err.message.includes('user validation failed')) {
-    Object.values(err.errors).forEach(({ properties }) => {
-      errors[properties.path] = properties.message;
+  const { email, password, name, username } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    const existingUsername = await User.findOne({ username });
+    if (existingUser) {
+      return res
+        .status(422)
+        .json({ errors: { email: 'A user with this email already exists' } });
+    }
+    if (existingUsername) {
+      return res
+        .status(422)
+        .json({ errors: { username: 'This username is already taken' } });
+    }
+
+    const newUser = await User.create({
+      provider: 'email',
+      email,
+      password,
+      username,
+      name,
     });
-  }
 
-  return errors;
-};
-
-const maxAge = 3 * 24 * 60 * 60; // 3 days in seconds
-
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.AUTH_ACCESS_TOKEN_SECRET, {
-    expiresIn: maxAge,
-  });
-};
-
-module.exports.signup_post = async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.create({ email, password });
-    const token = createToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 }); //asign jwt so that user can be logged in immediately after signing up (frontend)
-    res.status(201).json({ user: user._id });
+    // Generate token so that the user can log in after they register
+    const token = newUser.generateJWT();
+    const userInfo = newUser.toJSON();
+    res.json({ token, userInfo });
   } catch (err) {
-    const errors = handleErrors(err);
-    res.status(400).json({ errors });
+    return next(err);
   }
 };
 
-module.exports.login_post = async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.login(email, password);
-    const token = createToken(user._id);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-    res.status(200).json({ user: user._id });
-  } catch (err) {
-    res.status(401).json({ message: err.message });
-  }
+const logout = (req, res) => {
+	req.logout();
+	res.json({ message: 'Logged out successfully' });
 };
 
-// Should implement better, more secure logout functionality.
-module.exports.logout_get = (req, res) => {
-	res.cookie('jwt', '', { maxAge: 1 }); // Can't delete the cookie from the session, so we set it to blank and expire it immediately.
-	res.status(200).json({ message: 'logged out' });
-};
+module.exports = { login, register, logout }
