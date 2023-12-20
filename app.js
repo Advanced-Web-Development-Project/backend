@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const localAuthRoutes = require('./routes/localAuth');
+const routes = require('./routes/index');
 const passport = require('passport');
 
 const app = express();
@@ -23,4 +23,4 @@ mongoose
   .catch((err) => console.log(err));
 
 // routes
-app.use('/', localAuthRoutes);
+app.use('/', routes);

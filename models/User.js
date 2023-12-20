@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { isEmail } = require('validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const moment = require('moment-timezone');
 
 const userSchema = new mongoose.Schema(
   {
@@ -42,14 +43,20 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.toJSON = function () {
+  const userObject = this.toObject();
+
+  // The timestamps are stored in UTC in the database, but we want to display them in the user's local timezone
+  userObject.createdAt = moment(this.createdAt).tz('Europe/Helsinki').format();
+  userObject.updatedAt = moment(this.updatedAt).tz('Europe/Helsinki').format();
+
   return {
-    id: this._id,
-    provider: this.provider,
-    email: this.email,
-    username: this.username,
-    name: this.name,
-    createdAt: this.createdAt,
-    updatedAt: this.updatedAt,
+    id: userObject._id,
+    provider: userObject.provider,
+    email: userObject.email,
+    username: userObject.username,
+    name: userObject.name,
+    createdAt: userObject.createdAt,
+    updatedAt: userObject.updatedAt,
   };
 };
 
