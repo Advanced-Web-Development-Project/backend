@@ -3,7 +3,6 @@ const PassportLocalStrategy = require('passport-local').Strategy;
 
 const User = require('../models/User');
 const { loginSchema } = require('../utils/validators');
-const { json } = require('express');
 
 const passportLogin = new PassportLocalStrategy(
   {
