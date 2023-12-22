@@ -1,8 +1,8 @@
 const User = require('../models/User');
-const { registerSchema } = require('../services/validators');
+const { registerSchema } = require('../utils/validators');
 
 const login = (req, res) => {
-  const token = req.user.generateJWT();
+  const token = req.user.generateJWT(); // req.user is set by passport
   const userInfo = req.user.toJSON();
   res.json({ token, userInfo });
 };
@@ -10,11 +10,12 @@ const login = (req, res) => {
 const register = async (req, res, next) => {
   const { error } = registerSchema.validate(req.body, { abortEarly: false });
   if (error) {
-    const errorMessages = error.details.reduce((acc, detail) => {
+		// acc is the accumulator, builds up the error messages object
+    const errorMessages = error.details.reduce((acc, detail) => { 
       // Assuming 'detail.path' is an array with a single element - the field name
       acc[detail.path[0]] = detail.message.replace(/"/g, ''); // replace for better formatting of errors
       return acc;
-    }, {});
+    }, {}); // {} is the initial value of the accumulator
     return res.status(422).json({ errors: errorMessages }); // https://joi.dev/api/?v=17.9.1#validationerror
   }
 
@@ -51,9 +52,13 @@ const register = async (req, res, next) => {
   }
 };
 
-const logout = (req, res) => {
-	req.logout();
-	res.json({ message: 'Logged out successfully' });
+const logout = (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+  });
+  res.json({ message: 'Logged out successfully' });
 };
 
-module.exports = { login, register, logout }
+module.exports = { login, register, logout };
