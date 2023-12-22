@@ -44,9 +44,10 @@ const register = async (req, res, next) => {
     });
 
     // Generate token so that the user can log in after they register
-    const token = newUser.generateJWT();
-    const userInfo = newUser.toJSON();
-    res.json({ token, userInfo });
+    // const token = newUser.generateJWT();
+    // const userInfo = newUser.toJSON();
+    // res.json({ token, userInfo });
+		res.status(201).json({ message: 'User created successfully' });
   } catch (err) {
     return next(err);
   }
