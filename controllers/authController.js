@@ -1,8 +1,8 @@
 const User = require('../models/User');
-const { registerSchema } = require('../services/validators');
+const { registerSchema } = require('../utils/validators');
 
 const login = (req, res) => {
-  const token = req.user.generateJWT();
+  const token = req.user.generateJWT(); // req.user is set by passport
   const userInfo = req.user.toJSON();
   res.json({ token, userInfo });
 };
@@ -51,9 +51,13 @@ const register = async (req, res, next) => {
   }
 };
 
-const logout = (req, res) => {
-	req.logout();
-	res.json({ message: 'Logged out successfully' });
+const logout = (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+  });
+  res.json({ message: 'Logged out successfully' });
 };
 
-module.exports = { login, register, logout }
+module.exports = { login, register, logout };
