@@ -11,18 +11,13 @@ router.post('/register', authController.register);
 router.post('/logout', authController.logout);
 
 // google auth routes
-router.get('/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }),
+router.get('/google', passport.authenticate('google', { 
+	scope: ['profile', 'email'] })
 );
 
-router.get('/google/callback',
-  passport.authenticate('google', { failureRedirect: '/', session: false }),
-  (req, res) => {
-    const token = req.user.generateJWT();
-		const userInfo = req.user.toJSON();
-    res.cookie('x-auth-cookie', token); // Set cookie so that the frontend can save the token in local storage.
-		res.json({ token, userInfo });
-  }
-);
+router.get('/google/callback', passport.authenticate('google', { 
+	failureRedirect: '/', session: false,}),
+  authController.handleOAuthSuccess
+); 
 
 module.exports = router;

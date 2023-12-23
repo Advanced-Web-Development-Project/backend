@@ -10,8 +10,8 @@ const login = (req, res) => {
 const register = async (req, res, next) => {
   const { error } = registerSchema.validate(req.body, { abortEarly: false });
   if (error) {
-		// acc is the accumulator, builds up the error messages object
-    const errorMessages = error.details.reduce((acc, detail) => { 
+    // acc is the accumulator, builds up the error messages object
+    const errorMessages = error.details.reduce((acc, detail) => {
       // Assuming 'detail.path' is an array with a single element - the field name
       acc[detail.path[0]] = detail.message.replace(/"/g, ''); // replace for better formatting of errors
       return acc;
@@ -47,7 +47,7 @@ const register = async (req, res, next) => {
     // const token = newUser.generateJWT();
     // const userInfo = newUser.toJSON();
     // res.json({ token, userInfo });
-		res.status(201).json({ message: 'User created successfully' });
+    res.status(201).json({ message: 'User created successfully' });
   } catch (err) {
     return next(err);
   }
@@ -62,4 +62,11 @@ const logout = (req, res, next) => {
   res.json({ message: 'Logged out successfully' });
 };
 
-module.exports = { login, register, logout };
+const handleOAuthSuccess = (req, res) => {
+  const token = req.user.generateJWT();
+  const userInfo = req.user.toJSON();
+  res.cookie('x-auth-cookie', token); // Set cookie so that the frontend can save the token in local storage.
+  res.json({ token, userInfo });
+};
+
+module.exports = { login, register, logout, handleOAuthSuccess };
