@@ -77,13 +77,12 @@ userSchema.methods.generateJWT = function () {
 // OLD CODE INSTEAD OF "REGISTER USER"
 // use a function before doc saved to db
 userSchema.pre('save', async function (next) {
-	// Only hash the password if it has been modified (or is new)
-  if (!this.isModified('password')) {
-    return next();
-  }
-	
+  // Only hash the password if it has been modified (or is new)
+  if (!this.isModified('password')) 
+		return next();
+
   const salt = await bcrypt.genSalt();
-  this.password = bcrypt.hash(this.password, salt);
+  this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
