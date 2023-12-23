@@ -14,12 +14,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 require('./config/localStrategy');
 require('./config/jwtStrategy');
+require('./config/googleStrategy');
 
 // database connection
 const dbURI = process.env.MONGODB_URI;
 mongoose
   .connect(dbURI)
-  .then(() => app.listen(3000)) // listen only after connection is successful
+  .then(() => app.listen(8000)) // listen only after connection is successful
   .catch((err) => console.log(err));
 
 // routes

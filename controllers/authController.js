@@ -26,12 +26,12 @@ const register = async (req, res, next) => {
     const existingUsername = await User.findOne({ username });
     if (existingUser) {
       return res
-        .status(422)
+        .status(409)
         .json({ errors: { email: 'A user with this email already exists' } });
     }
     if (existingUsername) {
       return res
-        .status(422)
+        .status(409)
         .json({ errors: { username: 'This username is already taken' } });
     }
 

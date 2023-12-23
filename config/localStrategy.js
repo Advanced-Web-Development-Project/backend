@@ -26,7 +26,7 @@ const passportLogin = new PassportLocalStrategy(
       const user = await User.findOne({ email: email.trim() });
       if (!user) {
         return done(null, false, {
-          errors: { email: 'Email does not exist.' },
+          errors: { email: 'This email is not registered' },
         });
       }
 
@@ -36,7 +36,7 @@ const passportLogin = new PassportLocalStrategy(
         }
         if (!isMatch) {
           return done(null, false, {
-            errors: { password: 'Incorrect password.' },
+            errors: { password: 'Incorrect password' },
           });
         }
 

@@ -12,31 +12,32 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, 'Please enter an email'],
+      required: [true, 'Email is required'],
       unique: true,
       lowercase: true,
       trim: true,
-      validate: [isEmail, 'Please enter a valid email'],
+      validate: [isEmail, 'Email is invalid'],
     },
     password: {
       type: String,
-      required: [true, 'Please enter a password'],
       minlength: [6, 'Minimum password length is 6 characters'],
     },
     username: {
       type: String,
       unique: true,
-      required: [true, 'Please enter a username'],
+      required: [true, 'Username is required'],
       trim: true,
-      minlength: [4, 'Minimum username length is 4 characters'],
-      maxlength: [20, 'Maximum username length is 20 characters'],
       match: [/^[a-zA-Z0-9_]+$/, 'Username is invalid'],
-      index: true,
     },
     name: {
       type: String,
-      required: [true, 'Please enter your name'],
+      required: [true, 'name is required'],
       trim: true,
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
     },
   },
   { timestamps: true }
@@ -46,8 +47,8 @@ userSchema.methods.toJSON = function () {
   const userObject = this.toObject();
 
   // The timestamps are stored in UTC in the database, but we want to display them in the user's local timezone
-  userObject.createdAt = moment(this.createdAt).tz('Europe/Helsinki').format();
-  userObject.updatedAt = moment(this.updatedAt).tz('Europe/Helsinki').format();
+  userObject.createdAt = moment(this.createdAt).tz('Europe/Jerusalem').format();
+  userObject.updatedAt = moment(this.updatedAt).tz('Europe/Jerusalem').format();
 
   return {
     id: userObject._id,
@@ -76,8 +77,13 @@ userSchema.methods.generateJWT = function () {
 // OLD CODE INSTEAD OF "REGISTER USER"
 // use a function before doc saved to db
 userSchema.pre('save', async function (next) {
+	// Only hash the password if it has been modified (or is new)
+  if (!this.isModified('password')) {
+    return next();
+  }
+	
   const salt = await bcrypt.genSalt();
-  this.password = await bcrypt.hash(this.password, salt);
+  this.password = bcrypt.hash(this.password, salt);
   next();
 });
 
