@@ -22,7 +22,6 @@ router.get('/google/callback',
 		const userInfo = req.user.toJSON();
     res.cookie('x-auth-cookie', token); // Set cookie so that the frontend can save the token in local storage.
 		res.json({ token, userInfo });
-		console.log('Google auth successful');
   }
 );
 

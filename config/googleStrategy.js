@@ -14,7 +14,6 @@ const googleLogin = new GoogleStrategy(
     proxy: true,
   },
   async (accessToken, refreshToken, profile, done) => {
-		// console.log(profile);
     try {
 			// try to find user by googleId
       const user = await User.findOne({ googleId: profile.id });
@@ -24,13 +23,12 @@ const googleLogin = new GoogleStrategy(
     } catch (err) {
       console.log(err);
     }
-		console.log("email" + profile.emails[0].value)
 		// if here then no user found, create new user, then return it
     try {
       const newUser = await new User({
         provider: 'google',
         googleId: profile.id,
-        username: `user${profile.id}`,
+        username: `user${profile.id}`, // saves googleId as username: user1234567890
         email: profile.emails[0].value,
         name: profile.displayName,
       }).save();

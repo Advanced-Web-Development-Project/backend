@@ -47,8 +47,8 @@ userSchema.methods.toJSON = function () {
   const userObject = this.toObject();
 
   // The timestamps are stored in UTC in the database, but we want to display them in the user's local timezone
-  userObject.createdAt = moment(this.createdAt).tz('Europe/Jerusalem').format();
-  userObject.updatedAt = moment(this.updatedAt).tz('Europe/Jerusalem').format();
+  userObject.createdAt = moment(this.createdAt).tz('Asia/Jerusalem').format();
+  userObject.updatedAt = moment(this.updatedAt).tz('Asia/Jerusalem').format();
 
   return {
     id: userObject._id,
