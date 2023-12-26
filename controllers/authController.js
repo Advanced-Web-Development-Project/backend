@@ -4,7 +4,7 @@ const { registerSchema } = require('../utils/validators');
 const login = (req, res) => {
   const token = req.user.generateJWT(); // req.user is set by passport
   const userInfo = req.user.toJSON();
-  res.json({ token, userInfo });
+  res.status(200).json({ token, userInfo });
 };
 
 const register = async (req, res, next) => {
@@ -16,8 +16,8 @@ const register = async (req, res, next) => {
       acc[detail.path[0]] = detail.message.replace(/"/g, ''); // replace for better formatting of errors
       return acc;
     }, {}); // {} is the initial value of the accumulator
-    return res.status(422).json({ errors: errorMessages }); // https://joi.dev/api/?v=17.9.1#validationerror
-  }
+      return res.status(422).json({ errors: errorMessages }); // https://joi.dev/api/?v=17.9.1#validationerror
+    }
 
   const { email, password, name, username } = req.body;
 
