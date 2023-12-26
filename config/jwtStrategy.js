@@ -7,7 +7,7 @@ const User = require('../models/User');
 // JWT strategy
 const jwtLogin = new JwtStrategy(
   {
-    jwtFromRequest: ExtractJwt.fromHeader('x-auth-token'),
+    jwtFromRequest: ExtractJwt.fromHeader('token'),
     secretOrKey: process.env.AUTH_ACCESS_TOKEN_SECRET,
   },
   async (payload, done) => {
