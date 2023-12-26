@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const requireLocalAuth = require('../middleware/requireLocalAuth');
+const requireLocalAuth = require('../middlewares/requireLocalAuth');
 const authController = require('../controllers/authController');
 const passport = require('passport');
 
