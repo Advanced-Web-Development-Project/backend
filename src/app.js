@@ -22,7 +22,6 @@ require('./config/googleStrategy');
 // routes
 app.use('/', routes);
 app.use('/public/images', express.static(join(__dirname, '../public/images')));
-console.log(join(__dirname, '../public/images'));
 
 // database connection
 const dbURI = process.env.MONGODB_URI;
