@@ -5,10 +5,50 @@ const Post = require('../models/Post'); // Assuming you have a Mongoose model fo
 
 const getAllPosts = async () => {
   try {
-		return await Post.find(); // return all posts
+    return await Post.find(); // return all posts
   } catch (error) {
-		throw new Error('Error fetching posts, error: ', error.message || error); // if error.message is undefined, use error instead
+    throw new Error('Error fetching posts, error: ', error.message || error); // if error.message is undefined, use error instead
   }
 };
 
-module.exports = { getAllPosts };
+const getPost = async (postId) => {
+
+  try {
+    return await Post.findById(postId)
+  } catch (error) {
+    throw new Error(error.message)
+  }
+};
+
+const createPost = async (post) => {
+  try {
+    return await Post.create(post);
+  } catch (error) {
+    console.log(error)
+    throw new Error('Error creating post, error: ', error)
+  }
+};
+
+const updatePost = async (postId, post) => {
+  try {
+    return await Post.findByIdAndUpdate(postId, post, { new: true });
+  } catch (error) {
+    throw new Error('Error updating post, error: ', error.message || error)
+  }
+};
+
+const deletePost = async (postId) => {
+  try {
+    return await Post.findByIdAndDelete(postId);
+  } catch (error) {
+    throw new Error('Error deleting post, error: ', error.message || error)
+  }
+};
+
+module.exports = {
+  getAllPosts,
+  getPost,
+  createPost,
+  updatePost,
+  deletePost,
+};

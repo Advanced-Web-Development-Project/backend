@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes/index');
 const passport = require('passport');
+const cors = require('cors');
 
 const app = express();
 
@@ -10,6 +11,7 @@ const app = express();
 app.use(express.static('public')); // static files on the server
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use(passport.initialize());
 require('./config/localStrategy');

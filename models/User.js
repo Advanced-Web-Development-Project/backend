@@ -43,6 +43,8 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+
 userSchema.methods.toJSON = function () {
   const userObject = this.toObject();
 
@@ -78,8 +80,8 @@ userSchema.methods.generateJWT = function () {
 // use a function before doc saved to db
 userSchema.pre('save', async function (next) {
   // Only hash the password if it has been modified (or is new)
-  if (!this.isModified('password')) 
-		return next();
+  if (!this.isModified('password'))
+    return next();
 
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
