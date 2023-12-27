@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { join } = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes/index');
@@ -18,12 +19,14 @@ require('./config/localStrategy');
 require('./config/jwtStrategy');
 require('./config/googleStrategy');
 
+// routes
+app.use('/', routes);
+app.use('/public/images', express.static(join(__dirname, '../public/images')));
+console.log(join(__dirname, '../public/images'));
+
 // database connection
 const dbURI = process.env.MONGODB_URI;
 mongoose
   .connect(dbURI)
   .then(() => app.listen(8000)) // listen only after connection is successful
   .catch((err) => console.log(err));
-
-// routes
-app.use('/', routes);
