@@ -15,12 +15,15 @@ const getAllPosts = async (req, res, next) => {
 
 const getPost = async (req, res, next) => {
   try {
-    console.log(req.params)
+
+
     const postId = req.params.postId
     const post = await postService.getPost(postId)
     res.json({ post: post })
   } catch (error) {
-    return next(error);
+    console.log(error.message)
+    res.status(400).json({ error: error.message });
+    // return next(error);
   }
 };
 
@@ -30,7 +33,7 @@ const createPost = async (req, res, next) => {
     const newPost = await postService.createPost(postData);
     res.json({ newPost: newPost })
   } catch (error) {
-    return next(error);
+    res.status(400).json({ error: 'Invalid create post' });
   }
 };
 

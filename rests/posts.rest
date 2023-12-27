@@ -16,7 +16,7 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:8000/posts/658bd5ec954a14cadd6ea374
+GET http://localhost:8000/posts/32532523
 content-type: application/json
 
 ###

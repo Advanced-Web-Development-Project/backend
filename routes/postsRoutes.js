@@ -1,7 +1,6 @@
 const { Router } = require('express');
 const postController = require('../controllers/postsController');
-
-
+const requireJwtAuth = require('../middlewares/requireJwtAuth');
 const router = Router();
 
 // Get all posts
@@ -11,7 +10,7 @@ router.get('/', postController.getAllPosts);
 router.get('/:postId', postController.getPost);
 
 // Create a new post
-router.post('/', postController.createPost);
+router.post('/', requireJwtAuth, postController.createPost);
 
 // Update a post by postID
 // Can also use put. Put replaces the entire object, patch only updates the fields you send

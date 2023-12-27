@@ -16,14 +16,12 @@ const getPost = async (postId) => {
   try {
     return await Post.findById(postId)
   } catch (error) {
-    throw new Error('Error getting post, error: ', error.message || error)
+    throw new Error(error.message)
   }
 };
 
 const createPost = async (post) => {
   try {
-    console.log("got to create")
-    console.log("body post: ", post)
     return await Post.create(post);
   } catch (error) {
     console.log(error)
@@ -33,8 +31,6 @@ const createPost = async (post) => {
 
 const updatePost = async (postId, post) => {
   try {
-    console.log("post - ", post)
-    console.log("postId - ", postId)
     return await Post.findByIdAndUpdate(postId, post, { new: true });
   } catch (error) {
     throw new Error('Error updating post, error: ', error.message || error)
