@@ -5,7 +5,7 @@ const { resolve } = require('path');
 // In this case, the files are stored on disk in the 'public/images' directory.
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, resolve(__dirname, '../../public/images'));
+    cb(null, resolve(__dirname, '../../../public/images'));
   },
   filename: function (req, file, cb) {
     // Split the original file name by '.' to get the file extension.
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
       .replace(/[^a-zA-Z0-9._-]/g, '')
       .toLowerCase();
     // Create a new file name using the current timestamp and the cleaned base name.
-    const fileName = `${Date.now()}-${baseName}.${fileExt}`;
+    const fileName = `${baseName}-${Date.now()}.${fileExt}`;
     cb(null, fileName);
   },
 });
