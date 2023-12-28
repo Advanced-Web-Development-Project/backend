@@ -8,12 +8,13 @@ const cors = require('cors');
 
 const app = express();
 
-// middleware
+// middlewares
 app.use(express.static('public')); // static files on the server
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+// passport initialization
 app.use(passport.initialize());
 require('./config/localStrategy');
 require('./config/jwtStrategy');
