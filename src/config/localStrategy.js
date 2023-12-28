@@ -14,20 +14,16 @@ const passportLogin = new PassportLocalStrategy(
   async (req, email, password, done) => {
     const { error } = loginSchema.validate(req.body, { abortEarly: false });
     if (error) {
-      const errorMessages = error.details.reduce((acc, detail) => {
-        // Assuming 'detail.path' is an array with a single element - the field name
-        acc[detail.path[0]] = detail.message.replace(/"/g, ''); // replace for better formatting
-        return acc;
-      }, {});
-      return done(null, false, { errors: errorMessages }); // https://joi.dev/api/?v=17.9.1#validationerror
+      const errorMessages = error.details.map((detail) => {
+        return detail.message.replace(/"/g, ''); // replace for better formatting
+      });
+      return done(null, false, errorMessages ); // https://joi.dev/api/?v=17.9.1#validationerror
     }
 
     try {
       const user = await User.findOne({ email: email.trim() });
       if (!user) {
-        return done(null, false, {
-          errors: { email: 'This email is not registered' },
-        });
+        return done(null, false, 'This email is not registered');
       }
 
       user.comparePassword(password, function (err, isMatch) {
@@ -35,9 +31,7 @@ const passportLogin = new PassportLocalStrategy(
           return done(err);
         }
         if (!isMatch) {
-          return done(null, false, {
-            errors: { password: 'Incorrect password' },
-          });
+          return done(null, false, 'Incorrect password');
         }
 
         return done(null, user);

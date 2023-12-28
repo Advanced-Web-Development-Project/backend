@@ -17,7 +17,7 @@ router.get('/google', passport.authenticate('google', {
 
 router.get('/google/callback', passport.authenticate('google', { 
 	failureRedirect: '/', session: false,}),
-  authController.handleOAuthSuccess
+  authController.login
 ); 
 
 module.exports = router;

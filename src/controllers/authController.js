@@ -1,23 +1,32 @@
 const User = require('../models/User');
 const { registerSchema } = require('../utils/validators');
+const HttpResponse = require('../utils/HttpResponse');
 
 const login = (req, res) => {
   const token = req.user.generateJWT(); // req.user is set by passport
   const userInfo = req.user.toJSON();
-  res.status(200).json({ token, userInfo });
+  let response = new HttpResponse()
+    .withStatusCode(200)
+    .withMessage('Logged in successfully')
+    .withData({ token, userInfo })
+    .build();
+  res.json(response);
 };
 
 const register = async (req, res, next) => {
   const { error } = registerSchema.validate(req.body, { abortEarly: false });
   if (error) {
-    // acc is the accumulator, builds up the error messages object
-    const errorMessages = error.details.reduce((acc, detail) => {
-      // Assuming 'detail.path' is an array with a single element - the field name
-      acc[detail.path[0]] = detail.message.replace(/"/g, ''); // replace for better formatting of errors
-      return acc;
-    }, {}); // {} is the initial value of the accumulator
-      return res.status(422).json({ errors: errorMessages }); // https://joi.dev/api/?v=17.9.1#validationerror
-    }
+    const errorMessages = error.details.map((detail) => {
+      return detail.message.replace(/"/g, ''); // replace for better formatting
+    });
+
+    let response = new HttpResponse()
+      .withStatusCode(422)
+      .addError(errorMessages)
+      .build();
+
+    return res.status(422).json(response);
+  }
 
   const { email, password, name, username } = req.body;
 
@@ -25,14 +34,20 @@ const register = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
     const existingUsername = await User.findOne({ username });
     if (existingUser) {
-      return res
-        .status(409)
-        .json({ errors: { email: 'A user with this email already exists' } });
+      let response = new HttpResponse()
+        .withStatusCode(409)
+        .addError('A user with this email already exists')
+        .build();
+
+      return res.status(409).json(response);
     }
     if (existingUsername) {
-      return res
-        .status(409)
-        .json({ errors: { username: 'This username is already taken' } });
+      let response = new HttpResponse()
+        .withStatusCode(409)
+        .addError('A user with this username already exists')
+        .build();
+
+      return res.status(409).json(response);
     }
 
     const newUser = await User.create({
@@ -43,29 +58,25 @@ const register = async (req, res, next) => {
       name,
     });
 
-    // Generate token so that the user can log in after they register
-    // const token = newUser.generateJWT();
-    // const userInfo = newUser.toJSON();
-    // res.json({ token, userInfo });
-    res.status(201).json({ message: 'User created successfully' });
+    let response = new HttpResponse()
+      .withStatusCode(201)
+      .withMessage('User created successfully')
+      .build();
+
+    res.status(201).json(response);
   } catch (err) {
     return next(err);
   }
 };
 
+// TODO: Implement logout
 const logout = (req, res, next) => {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    }
-  });
-  res.json({ message: 'Logged out successfully' });
+  let response = new HttpResponse()
+    .withStatusCode(200)
+    .withMessage('Logged out successfully')
+    .build();
+
+  res.status(200).json(response);
 };
 
-const handleOAuthSuccess = (req, res) => {
-  const token = req.user.generateJWT();
-  const userInfo = req.user.toJSON();
-  res.json({ token, userInfo });
-};
-
-module.exports = { login, register, logout, handleOAuthSuccess };
+module.exports = { login, register, logout };
