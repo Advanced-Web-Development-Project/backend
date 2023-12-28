@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 const requireJwtAuth = require('../middlewares/requireJwtAuth');
+const upload = require('../middlewares/imageUpload');
 const upload = require('../utils/imageUpload');
 
 
