@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 const requireJwtAuth = require('../middlewares/requireJwtAuth');
-const upload = require('../config/multerConfig');
+const upload = require('../utils/imageUpload');
 
 
 router.get('/protected', requireJwtAuth, (req, res) => {
