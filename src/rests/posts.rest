@@ -32,21 +32,33 @@ GET http://localhost:8000/posts/32532523
 content-type: application/json
 
 ###
-DELETE  http://localhost:8000/posts/658bd86436ccfbb51b848e08
+DELETE  http://localhost:8000/posts/658bdd094d95c7557458f562
 content-type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIxMmgiLCJpZCI6IjY1ODZjZWYwOWM5MzBmMzUxY2YzZmUxZiIsInByb3ZpZGVyIjoiZW1haWwiLCJlbWFpbCI6InRlc3QxMjNAZ21haWwuY29tIiwiaWF0IjoxNzAzODU1NDA1fQ.noXjAbnWsCDLQRCJdjKlNMNGewLHpgALfvk2qs3fkzo
 
 ### - Invalid post id
-DELETE  http://localhost:8000/posts/dofsdk23134
+DELETE  http://localhost:8000/posts/658bdd094d95c7557458f562
 content-type: application/json
 
 ###
-PUT   http://localhost:8000/posts/658bdd094d95c7557458f562
+PUT   http://localhost:8000/posts/658ec5417fc82b6f7949a43c
 content-type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIxMmgiLCJpZCI6IjY1ODZjZWYwOWM5MzBmMzUxY2YzZmUxZiIsInByb3ZpZGVyIjoiZW1haWwiLCJlbWFpbCI6InRlc3QxMjNAZ21haWwuY29tIiwiaWF0IjoxNzAzODU1NDA1fQ.noXjAbnWsCDLQRCJdjKlNMNGewLHpgALfvk2qs3fkzo
 
 {
     "user": "65807eee6037cf53effee617", 
-    "title": "post updated",
+    "title": "post updated @@@",
     "imagePath": "/image/path/updated",
-    "likes": 10,
+    "likes": ["updated", "updated2"],
     "content": "This post updated 2"
 }
+
+###
+PATCH   http://localhost:8000/posts/658ec5417fc82b6f7949a43c
+content-type: application/json
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIxMmgiLCJpZCI6IjY1ODZjZWYwOWM5MzBmMzUxY2YzZmUxZiIsInByb3ZpZGVyIjoiZW1haWwiLCJlbWFpbCI6InRlc3QxMjNAZ21haWwuY29tIiwiaWF0IjoxNzAzODU1NDA1fQ.noXjAbnWsCDLQRCJdjKlNMNGewLHpgALfvk2qs3fkzo
+
+{
+    "likes": ["updated-versio3-1", "updated-versio3-2"]
+}
+

@@ -19,11 +19,14 @@ router.put('/:postId', requireJwtAuth, postController.updatePost);
 // Delete a post by postID
 router.delete('/:postId', requireJwtAuth, postController.deletePost);
 
-// Upvote a post, each user can only upvote once, if already downvoted, remove downvote
-router.patch('/:postId/upvote', postController.upvotePost);
+// Update post specific fields by postId
+router.patch('/:postId', postController.updatePostFields);
 
-// Downvote a post, each user can only downvote once, if already upvoted, remove upvote
-router.patch('/:postId/downvote',);
+// // Upvote a post, each user can only upvote once, if already downvoted, remove downvote
+// router.patch('/:postId/upvote', postController.updatePostFields);
+
+// // Downvote a post, each user can only downvote once, if already upvoted, remove upvote
+// router.patch('/:postId/downvote',);
 
 
 module.exports = router;
