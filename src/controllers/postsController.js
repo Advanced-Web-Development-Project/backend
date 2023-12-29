@@ -64,6 +64,7 @@ const createPost = async (req, res, next) => {
     return res.status(200).json(response);
 
   } catch (error) {
+    console.log(error)
     const response = new HttpResponse().withStatusCode(500).addError(`Invalid create post`).build();
     return res.status(500).json(response);
   }

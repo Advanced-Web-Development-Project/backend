@@ -19,12 +19,10 @@ const postSchema = new mongoose.Schema(
         },
         likes: {
             type: [String],
-            unique: true,
             default: [],
         },
         dislikes: {
             type: [String],
-            unique: true,
             default: [],
         },
         content: {
@@ -33,7 +31,7 @@ const postSchema = new mongoose.Schema(
         },
 
     },
-    { timestamps: true }
+    { timestamps: true, autoIndex: false }
 );
 
 

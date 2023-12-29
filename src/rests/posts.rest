@@ -59,6 +59,6 @@ content-type: application/json
 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIxMmgiLCJpZCI6IjY1ODZjZWYwOWM5MzBmMzUxY2YzZmUxZiIsInByb3ZpZGVyIjoiZW1haWwiLCJlbWFpbCI6InRlc3QxMjNAZ21haWwuY29tIiwiaWF0IjoxNzAzODU1NDA1fQ.noXjAbnWsCDLQRCJdjKlNMNGewLHpgALfvk2qs3fkzo
 
 {
-    "likes": ["updated-versio3-1", "updated-versio3-2"]
+    "likes": ["updated-versio3-2", "updated-versio3-3"]
 }
 
