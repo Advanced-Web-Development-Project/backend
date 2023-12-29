@@ -21,7 +21,7 @@ describe('auth API Test', () => {
     };
     const res = await request(app).post('/auth/login').send(loginData);
     expect(res.statusCode).toEqual(200); // 200 for successful login
-    expect(res.body).toHaveProperty('token'); // Assuming the response should have a token property
+    expect(res.body.data).toHaveProperty('token'); // Assuming the response should have a token property
   });
 
   it('should not register a new user with an existing email', async () => {

@@ -14,16 +14,16 @@ router.post('/', requireJwtAuth, postController.createPost);
 
 // Update a post by postID
 // Can also use put. Put replaces the entire object, patch only updates the fields you send
-router.put('/:postId', postController.updatePost);
+router.put('/:postId', requireJwtAuth, postController.updatePost);
 
 // Delete a post by postID
-router.delete('/:postId', postController.deletePost);
+router.delete('/:postId', requireJwtAuth, postController.deletePost);
 
 // Upvote a post, each user can only upvote once, if already downvoted, remove downvote
-router.post('/:postId/upvote',);
+router.patch('/:postId/upvote', postController.upvotePost);
 
 // Downvote a post, each user can only downvote once, if already upvoted, remove upvote
-router.post('/:postId/downvote',);
+router.patch('/:postId/downvote',);
 
 
 module.exports = router;
