@@ -20,13 +20,13 @@ const requireLocalAuth = (req, res, next) => {
       const response = new HttpResponse()
         .withStatusCode(500)
         .addError(err.message);
-      return res.status(response.statusCode).send(response);
+      return res.status(500).send(response);
     }
     if (!user) {
       const response = new HttpResponse()
-        .withStatusCode(422)
+        .withStatusCode(401)
         .addError(info);
-      return res.status(response.statusCode).send(response);
+      return res.status(401).send(response);
     }
     req.user = user;
     next();

@@ -21,11 +21,11 @@ const register = async (req, res, next) => {
     });
 
     let response = new HttpResponse()
-      .withStatusCode(422)
+      .withStatusCode(400)
       .addError(errorMessages)
       .build();
 
-    return res.status(422).json(response);
+    return res.status(400).json(response);
   }
 
   const { email, password, name, username } = req.body;

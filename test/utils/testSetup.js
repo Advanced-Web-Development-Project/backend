@@ -1,7 +1,7 @@
 const dbHandler = require('./dbHandler');
 const { createApp } = require('../../src/app');
 
-const app = createApp(); 
+const app = createApp();
 
 beforeAll(async () => {
   await dbHandler.connect();
@@ -15,4 +15,4 @@ const clearDatabase = async () => {
   await dbHandler.clearDatabase();
 };
 
-module.exports = app; 
+module.exports = app;

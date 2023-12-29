@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const HttpResponse = require('../utils/httpResponse');
 
 const loginSchema = Joi.object().keys({
   email: Joi.string().trim().email().required(),
