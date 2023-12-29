@@ -37,6 +37,16 @@ const updatePost = async (postId, post) => {
   }
 };
 
+const updatePostFields = async (postId, fieldsToUpdate) => {
+  try {
+    // Use $set to update specific fields
+    return await Post.findByIdAndUpdate(postId, { $set: fieldsToUpdate }, { new: true });
+  } catch (error) {
+    throw new Error('Error updating post fields: ' + (error.message || error));
+  }
+};
+
+
 const deletePost = async (postId) => {
   try {
     return await Post.findByIdAndDelete(postId);
@@ -50,5 +60,6 @@ module.exports = {
   getPost,
   createPost,
   updatePost,
+  updatePostFields,
   deletePost,
 };

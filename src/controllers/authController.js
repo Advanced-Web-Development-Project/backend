@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const { registerSchema } = require('../utils/validators');
-const HttpResponse = require('../utils/HttpResponse');
+const HttpResponse = require('../utils/httpResponse');
 
 const login = (req, res) => {
   const token = req.user.generateJWT(); // req.user is set by passport

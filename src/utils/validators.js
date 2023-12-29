@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const HttpResponse = require('../utils/httpResponse');
 
 const loginSchema = Joi.object().keys({
   email: Joi.string().trim().email().required(),
@@ -12,7 +13,32 @@ const registerSchema = Joi.object().keys({
   password: Joi.string().trim().min(6).required(),
 });
 
+const postSchema = Joi.object().keys({
+  user: Joi.string().trim().required(),
+  title: Joi.string().trim().required(),
+  content: Joi.string().trim().required(),
+  imagePath: Joi.string().trim().required(),
+  likes: Joi.array().unique(),
+  dislikes: Joi.array().unique(),
+})
+
+const validateSchema = (schema, data) => {
+
+  const { error } = schema.validate(data, { abortEarly: false });
+
+  if (error) {
+    const errorMessages = error.details.map((detail) => {
+      return detail.message.replace(/"/g, '');
+    });
+    return errorMessages
+  }
+  return null
+
+}
+
 module.exports = {
   loginSchema,
   registerSchema,
+  postSchema,
+  validateSchema
 };
