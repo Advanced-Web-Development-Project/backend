@@ -28,51 +28,13 @@ const validateSchema = (schema, data) => {
 
   if (error) {
     const errorMessages = error.details.map((detail) => {
-      return detail.message.replace(/"/g, ''); // replace for better formatting
+      return detail.message.replace(/"/g, '');
     });
-
-    let response = new HttpResponse()
-      .withStatusCode(422)
-      .addError(errorMessages)
-      .build();
-
-    return response
-
+    return errorMessages
   }
   return null
 
 }
-
-// user: {
-//   type: mongoose.Schema.Types.ObjectId,
-//   ref: 'user',
-//   required: true
-// },
-// title: {
-//   type: String,
-//   required: true,
-// },
-// imagePath: {
-//   type: String,
-//   required: true,
-// },
-// likes: {
-//   type: [String],
-//   unique: true,
-//   default: [],
-// },
-// dislikes: {
-//   type: [String],
-//   unique: true,
-//   default: [],
-// },
-// content: {
-//   type: String,
-//   required: true
-// },
-
-// },
-// { timestamps: true }
 
 module.exports = {
   loginSchema,

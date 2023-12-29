@@ -53,9 +53,14 @@ const createPost = async (req, res, next) => {
 
     const postData = req.body
 
-    const response = validateSchema(postSchema, postData)
-
-    if (response !== null) return res.status(422).json(response);
+    const errorMessages = validateSchema(postSchema, postData)
+    if (errorMessages) {
+      let response = new HttpResponse()
+        .withStatusCode(422)
+        .addError(errorMessages)
+        .build();
+      res.status(422).json(response);
+    }
 
     const newPost = await postService.createPost(postData);
     res.status(200).json({ newPost: newPost })
