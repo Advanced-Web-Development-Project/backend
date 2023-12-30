@@ -1,6 +1,6 @@
-const passport = require('passport');
-const PassportLocalStrategy = require('passport-local').Strategy;
-const User = require('../models/User');
+import passport from 'passport';
+import { Strategy as PassportLocalStrategy } from 'passport-local';
+import User from '../models/User';
 
 const passportLogin = new PassportLocalStrategy(
   {
@@ -9,14 +9,14 @@ const passportLogin = new PassportLocalStrategy(
     session: false,
     passReqToCallback: true,
   },
-  async (req, email, password, done) => {
+  async (req, email: string, password: string, done) => {
     try {
       const user = await User.findOne({ email: email.trim() });
       if (!user) {
         return done(null, false, 'This email is not registered');
       }
 
-      user.comparePassword(password, function (err, isMatch) {
+      user.comparePassword(password, function (err: Error, isMatch: boolean) {
         if (err) {
           return done(err);
         }

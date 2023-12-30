@@ -1,6 +1,6 @@
-const request = require('supertest');
-const app = require('./utils/testSetup');
-const generator = require('./utils/dataGenerator');
+import request from 'supertest';
+import app from './utils/testSetup';
+import generator from './utils/dataGenerator';
 
 describe('local auth API Test', () => {
   const validUser = generator.generateValidUserData();

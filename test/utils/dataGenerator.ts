@@ -1,4 +1,4 @@
-const { faker } = require('@faker-js/faker');
+import { faker } from '@faker-js/faker';
 
 const generateValidUserData = () => ({
   email: faker.internet.email(),
@@ -23,7 +23,7 @@ const generateDuplicateUsernameUserData = (existingUser) => ({
 });
 
 
-module.exports = {
+export default {
   generateValidUserData,
   generateInvalidEmailUserData,
   generateDuplicateEmailUserData,

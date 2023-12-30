@@ -1,10 +1,35 @@
-const mongoose = require('mongoose');
-const { isEmail } = require('validator');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const moment = require('moment-timezone');
+import mongoose from 'mongoose';
+import { isEmail } from 'validator';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import moment from 'moment-timezone';
 
-const userSchema = new mongoose.Schema(
+export interface IUser {
+  provider: string;
+  email: string;
+  password?: string; // optional because we have google auth
+  username: string;
+  name: string;
+  googleId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+	toJSON(): object;
+  generateJWT(): string;
+	comparePassword(candidatePassword: string, callback: (err: Error | null, isMatch?: boolean) => void): void;
+}
+
+interface IUserJSON {
+	id: string;
+	provider: string;
+	email: string;
+	username: string;
+	name: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
+
+const userSchema = new mongoose.Schema<IUser>(
   {
     provider: {
       type: String,
@@ -44,7 +69,7 @@ const userSchema = new mongoose.Schema(
 
 
 
-userSchema.methods.toJSON = function () {
+userSchema.methods.toJSON = function (): IUserJSON {
   const userObject = this.toObject();
 
   // The timestamps are stored in UTC in the database, but we want to display them in the user's local timezone
@@ -75,7 +100,6 @@ userSchema.methods.generateJWT = function () {
   return token;
 };
 
-// OLD CODE INSTEAD OF "REGISTER USER"
 // use a function before doc saved to db
 userSchema.pre('save', async function (next) {
   // Only hash the password if it has been modified (or is new)
@@ -87,8 +111,8 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.methods.comparePassword = function (candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+userSchema.methods.comparePassword = function (candidatePassword: string, callback) {
+  bcrypt.compare(candidatePassword, this.password, (err: Error, isMatch: boolean) => {
     if (err) {
       return callback(err);
     }
@@ -96,6 +120,7 @@ userSchema.methods.comparePassword = function (candidatePassword, callback) {
   });
 };
 
-const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+const User = mongoose.model<IUser>('User', userSchema);
+
+export default User;
