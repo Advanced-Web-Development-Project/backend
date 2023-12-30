@@ -1,6 +1,7 @@
-const { Router } = require('express');
-const postController = require('../controllers/postsController');
-const requireJwtAuth = require('../middlewares/requireJwtAuth');
+import { Router } from 'express';
+import postController from '../controllers/postsController';
+import requireJwtAuth from '../middlewares/requireJwtAuth';
+
 const router = Router();
 
 // Get all posts
@@ -29,4 +30,4 @@ router.patch('/:postId', postController.updatePostFields);
 // router.patch('/:postId/downvote',);
 
 
-module.exports = router;
+export default router;

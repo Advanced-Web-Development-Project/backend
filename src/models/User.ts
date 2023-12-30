@@ -1,33 +1,23 @@
-import mongoose from 'mongoose';
-import { isEmail } from 'validator';
+import mongoose, { Document } from 'mongoose';
+import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import moment from 'moment-timezone';
 
-export interface IUser {
+export interface IUser extends Document {
   provider: string;
   email: string;
-  password?: string; // optional because we have google auth
+  password?: string; // Optional because we have google auth
   username: string;
   name: string;
   googleId?: string;
   createdAt: Date;
   updatedAt: Date;
-	toJSON(): object;
+
+  toJSON(): object;
   generateJWT(): string;
-	comparePassword(candidatePassword: string, callback: (err: Error | null, isMatch?: boolean) => void): void;
+  comparePassword(candidatePassword: string, callback: (err: Error | null, isMatch?: boolean) => void): void;
 }
-
-interface IUserJSON {
-	id: string;
-	provider: string;
-	email: string;
-	username: string;
-	name: string;
-	createdAt: string;
-	updatedAt: string;
-}
-
 
 const userSchema = new mongoose.Schema<IUser>(
   {
@@ -41,7 +31,7 @@ const userSchema = new mongoose.Schema<IUser>(
       unique: true,
       lowercase: true,
       trim: true,
-      validate: [isEmail, 'Email is invalid'],
+      validate: [validator.isEmail, 'Please enter a valid email'],
     },
     password: {
       type: String,
@@ -69,7 +59,7 @@ const userSchema = new mongoose.Schema<IUser>(
 
 
 
-userSchema.methods.toJSON = function (): IUserJSON {
+userSchema.methods.toJSON = function (): object {
   const userObject = this.toObject();
 
   // The timestamps are stored in UTC in the database, but we want to display them in the user's local timezone
@@ -87,7 +77,7 @@ userSchema.methods.toJSON = function (): IUserJSON {
   };
 };
 
-userSchema.methods.generateJWT = function () {
+userSchema.methods.generateJWT = function (): string  {
   const token = jwt.sign(
     {
       expiresIn: '12h',
@@ -101,7 +91,7 @@ userSchema.methods.generateJWT = function () {
 };
 
 // use a function before doc saved to db
-userSchema.pre('save', async function (next) {
+userSchema.pre<IUser>('save', async function (next) {
   // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password'))
     return next();
@@ -111,7 +101,11 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.methods.comparePassword = function (candidatePassword: string, callback) {
+userSchema.methods.comparePassword = function (
+  this: IUser,
+  candidatePassword: string,
+  callback: (err: Error | null, isMatch?: boolean) => void
+): void {
   bcrypt.compare(candidatePassword, this.password, (err: Error, isMatch: boolean) => {
     if (err) {
       return callback(err);

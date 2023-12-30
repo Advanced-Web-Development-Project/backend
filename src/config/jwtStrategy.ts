@@ -1,8 +1,8 @@
-const passport = require('passport');
-const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
+import passport from 'passport';
+import { Strategy as JwtStrategy } from 'passport-jwt';
+import { ExtractJwt } from 'passport-jwt';
 
-const User = require('../models/User');
+import User from '../models/User';
 
 // JWT strategy
 const jwtLogin = new JwtStrategy(

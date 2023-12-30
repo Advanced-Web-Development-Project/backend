@@ -1,5 +1,5 @@
-const multer = require('multer');
-const { resolve } = require('path');
+import multer from 'multer';
+import { resolve } from 'path';
 
 // Define the storage for multer. This determines how the uploaded files are stored.
 // In this case, the files are stored on disk in the 'public/images' directory.
@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 
 // Define a filter for the multer instance. This filter determines which files are accepted.
 // In this case, only files with a mimetype of 'image/png', 'image/jpg', or 'image/jpeg' are accepted.
-const imageFilter = (req, file, cb) => {
+const imageFilter = (req, file: Express.Multer.File, cb) => {
   if (['image/png', 'image/jpg', 'image/jpeg'].includes(file.mimetype)) {
     cb(null, true);
   } else {
@@ -42,4 +42,4 @@ const upload = multer({
   limits: { fileSize: 1024 * 1024 * 5 },
 });
 
-module.exports = upload;
+export default upload;

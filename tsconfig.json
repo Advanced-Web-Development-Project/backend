@@ -5,7 +5,9 @@
     "target": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "noImplicitAny": false,
+    "typeRoots": ["./node_modules/@types", "./types/custom.d.ts"]
   },
   "lib": ["es2015"]
 }

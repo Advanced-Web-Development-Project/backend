@@ -9,14 +9,14 @@ const passportLogin = new PassportLocalStrategy(
     session: false,
     passReqToCallback: true,
   },
-  async (req, email: string, password: string, done) => {
+  async (req, email, password, done) => {
     try {
       const user = await User.findOne({ email: email.trim() });
       if (!user) {
         return done(null, false, 'This email is not registered');
       }
 
-      user.comparePassword(password, function (err: Error, isMatch: boolean) {
+      user.comparePassword(password, function (err, isMatch) {
         if (err) {
           return done(err);
         }

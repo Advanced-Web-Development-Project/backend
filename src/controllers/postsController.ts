@@ -1,7 +1,7 @@
-const postService = require('../services/postsService');
-const mongoose = require('mongoose');
-const { postSchema, validateSchema } = require('../utils/validators');
-const HttpResponse = require('../utils/httpResponse');
+import postService from '../services/postsService';
+import mongoose from 'mongoose';
+import { postSchema, validateSchema } from '../utils/validators';
+import HttpResponse from '../utils/httpResponse';
 
 // This file handles the logic for handling the requests and sending back the responses.
 // The database interaction is handled by the service file.
@@ -10,7 +10,7 @@ const getAllPosts = async (req, res) => {
   try {
     const posts = await postService.getAllPosts();
 
-    let response = new HttpResponse()
+    const response = new HttpResponse()
       .withStatusCode(200)
       .withData(posts)
       .withMessage("Successfully fetched all posts")
@@ -20,7 +20,7 @@ const getAllPosts = async (req, res) => {
 
   } catch (error) {
 
-    let response = new HttpResponse()
+    const response = new HttpResponse()
       .withStatusCode(500)
       .withMessage('Server Error - get all posts')
       .build();
@@ -37,7 +37,7 @@ const getPost = async (req, res) => {
     res.json({ post: post })
   } catch (error) {
 
-    let response = new HttpResponse()
+    const response = new HttpResponse()
       .withStatusCode(500)
       .withMessage('Server Error - get  post')
       .build();
@@ -47,7 +47,7 @@ const getPost = async (req, res) => {
   }
 };
 
-const createPost = async (req, res, next) => {
+const createPost = async (req, res) => {
 
   try {
 
@@ -70,7 +70,7 @@ const createPost = async (req, res, next) => {
   }
 };
 
-const updatePost = async (req, res, next) => {
+const updatePost = async (req, res) => {
   try {
 
     const postId = req.params.postId
@@ -102,7 +102,7 @@ const updatePost = async (req, res, next) => {
 };
 
 
-const deletePost = async (req, res, next) => {
+const deletePost = async (req, res) => {
   try {
 
     const postId = req.params.postId
@@ -163,7 +163,7 @@ const updatePostFields = async (req, res) => {
 
 
 
-module.exports = {
+export default {
   getAllPosts,
   getPost,
   createPost,

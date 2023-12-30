@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const loginSchema = Joi.object().keys({
   email: Joi.string().trim().email().required(),
@@ -21,7 +21,7 @@ const postSchema = Joi.object().keys({
   dislikes: Joi.array().unique(),
 })
 
-const validateSchema = (schema, data) => {
+const validateSchema = (schema: Joi.Schema, data: object) => {
   const { error } = schema.validate(data, { abortEarly: false });
   if (error) {
     const errorMessages = error.details.map((detail) => {
@@ -32,7 +32,7 @@ const validateSchema = (schema, data) => {
   return null
 }
 
-module.exports = {
+export {
   loginSchema,
   registerSchema,
   postSchema,
