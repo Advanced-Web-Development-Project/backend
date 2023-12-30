@@ -22,9 +22,7 @@ const postSchema = Joi.object().keys({
 })
 
 const validateSchema = (schema, data) => {
-
   const { error } = schema.validate(data, { abortEarly: false });
-
   if (error) {
     const errorMessages = error.details.map((detail) => {
       return detail.message.replace(/"/g, '');
@@ -32,7 +30,6 @@ const validateSchema = (schema, data) => {
     return errorMessages
   }
   return null
-
 }
 
 module.exports = {

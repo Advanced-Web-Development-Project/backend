@@ -2,7 +2,7 @@ const request = require('supertest');
 const app = require('./utils/testSetup');
 const generator = require('./utils/dataGenerator');
 
-describe('auth API Test', () => {
+describe('local auth API Test', () => {
   const validUser = generator.generateValidUserData();
   it('should register a new user', async () => {
     const res = await request(app).post('/auth/register').send(validUser);
@@ -45,12 +45,31 @@ describe('auth API Test', () => {
     expect(res.body.data).toHaveProperty('token'); // Check if token is returned
   });
 
-	it('should not log in a user with invalid credentials', async () => {
-		const loginData = {
-			email: validUser.email,
-			password: validUser.password + 'invalid',
-		};
-		const res = await request(app).post('/auth/login').send(loginData);
-		expect(res.statusCode).toEqual(401); // 401 for unauthorized
-	});
+  it('should not log in a user with invalid credentials', async () => {
+    const loginData = {
+      email: validUser.email,
+      password: validUser.password + 'invalid',
+    };
+    const res = await request(app).post('/auth/login').send(loginData);
+    expect(res.statusCode).toEqual(401); // 401 for unauthorized
+  });
+
+  it('should log out a user', async () => {
+    const res = await request(app).post('/auth/logout');
+    expect(res.statusCode).toEqual(200); // 200 for successful logout
+  });
+
+  it('should not try to log in a user with an invalid email', async () => {
+    const loginData = {
+      email: invalidEmailUser.email,
+      password: invalidEmailUser.password,
+    };
+    const res = await request(app).post('/auth/login').send(loginData);
+    expect(res.statusCode).toEqual(400); // 400 for bad request
+  });
+
+	console.log(validUser);
+	console.log(invalidEmailUser);
+	console.log(duplicateEmailUser);
+	console.log(duplicateUsernameUser);
 });

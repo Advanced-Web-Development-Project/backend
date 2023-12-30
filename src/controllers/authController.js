@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const { registerSchema } = require('../utils/validators');
+const { registerSchema, validateSchema } = require('../utils/validators');
 const HttpResponse = require('../utils/httpResponse');
 
 const login = (req, res) => {
@@ -14,17 +14,12 @@ const login = (req, res) => {
 };
 
 const register = async (req, res, next) => {
-  const { error } = registerSchema.validate(req.body, { abortEarly: false });
-  if (error) {
-    const errorMessages = error.details.map((detail) => {
-      return detail.message.replace(/"/g, ''); // replace for better formatting
-    });
-
+  const errorMessages = validateSchema(registerSchema, req.body);
+  if (errorMessages) {
     let response = new HttpResponse()
       .withStatusCode(400)
       .addError(errorMessages)
       .build();
-
     return res.status(400).json(response);
   }
 

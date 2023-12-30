@@ -1,12 +1,12 @@
 const { Router } = require('express');
-const requireLocalAuth = require('../middlewares/requireLocalAuth');
+const authenticateRequest = require('../middlewares/requireLocalAuth');
 const authController = require('../controllers/authController');
 const passport = require('passport');
 
 const router = Router();
 
 // local auth routes
-router.post('/login', requireLocalAuth, authController.login);
+router.post('/login', authenticateRequest, authController.login);
 router.post('/register', authController.register);
 router.post('/logout', authController.logout);
 
