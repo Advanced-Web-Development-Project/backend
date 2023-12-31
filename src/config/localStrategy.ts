@@ -17,12 +17,11 @@ const passportLogin = new PassportLocalStrategy(
       }
 
       user.comparePassword(password, function (err, isMatch) {
-        if (err) {
-          return done(err);
-        }
-        if (!isMatch) {
-          return done(null, false, 'Incorrect password');
-        }
+        if (err) 
+					return done(err);
+				
+        if (!isMatch)
+          return done(null, false, { message: 'Incorrect password.' });
 
         return done(null, user);
       });

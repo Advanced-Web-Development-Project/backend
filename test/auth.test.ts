@@ -68,8 +68,8 @@ describe('local auth API Test', () => {
     expect(res.statusCode).toEqual(400); // 400 for bad request
   });
 
-	console.log(validUser);
-	console.log(invalidEmailUser);
-	console.log(duplicateEmailUser);
-	console.log(duplicateUsernameUser);
+	// console.log(validUser);
+	// console.log(invalidEmailUser);
+	// console.log(duplicateEmailUser);
+	// console.log(duplicateUsernameUser);
 });

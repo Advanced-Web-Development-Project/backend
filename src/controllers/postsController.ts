@@ -60,7 +60,7 @@ const createPost = async (req, res) => {
     }
 
     const newPost = await postService.createPost(postData);
-    const response = new HttpResponse().withStatusCode(200).addError(errorMessages).withData(newPost).build();
+    const response = new HttpResponse().withStatusCode(200).withData(newPost).build();
     return res.status(200).json(response);
 
   } catch (error) {

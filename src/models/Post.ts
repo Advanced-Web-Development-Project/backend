@@ -1,6 +1,4 @@
-// import { ObjectId } from 'bson';
 import mongoose from 'mongoose';
-
 
 const postSchema = new mongoose.Schema(
     {

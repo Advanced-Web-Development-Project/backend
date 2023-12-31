@@ -1,30 +1,28 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import moment from 'moment-timezone';
 
-export interface IUser extends Document {
-  provider: string;
+export interface UserInput {
   email: string;
-  password?: string; // Optional because we have google auth
+  password?: string; // Only required for local strategy
   username: string;
   name: string;
-  googleId?: string;
+}
+
+export interface UserDocument extends UserInput, mongoose.Document {
+  provider: string;
+  googleId?: string; // Only required for google strategy
   createdAt: Date;
   updatedAt: Date;
-
   toJSON(): object;
   generateJWT(): string;
   comparePassword(candidatePassword: string, callback: (err: Error | null, isMatch?: boolean) => void): void;
 }
 
-const userSchema = new mongoose.Schema<IUser>(
+const userSchema = new mongoose.Schema(
   {
-    provider: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: [true, 'Email is required'],
@@ -48,6 +46,10 @@ const userSchema = new mongoose.Schema<IUser>(
       required: [true, 'name is required'],
       trim: true,
     },
+    provider: {
+      type: String,
+      required: true,
+    },
     googleId: {
       type: String,
       unique: true,
@@ -56,8 +58,6 @@ const userSchema = new mongoose.Schema<IUser>(
   },
   { timestamps: true }
 );
-
-
 
 userSchema.methods.toJSON = function (): object {
   const userObject = this.toObject();
@@ -77,7 +77,7 @@ userSchema.methods.toJSON = function (): object {
   };
 };
 
-userSchema.methods.generateJWT = function (): string  {
+userSchema.methods.generateJWT = function (): string {
   const token = jwt.sign(
     {
       expiresIn: '12h',
@@ -91,30 +91,30 @@ userSchema.methods.generateJWT = function (): string  {
 };
 
 // use a function before doc saved to db
-userSchema.pre<IUser>('save', async function (next) {
+userSchema.pre('save', async function (this: UserDocument, next) {
   // Only hash the password if it has been modified (or is new)
-  if (!this.isModified('password'))
-    return next();
+  if (!this.isModified('password')) return next();
 
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
+
 userSchema.methods.comparePassword = function (
-  this: IUser,
-  candidatePassword: string,
-  callback: (err: Error | null, isMatch?: boolean) => void
-): void {
-  bcrypt.compare(candidatePassword, this.password, (err: Error, isMatch: boolean) => {
-    if (err) {
-      return callback(err);
-    }
+	candidatePassword: string, 
+	callback: (err: Error | null, isMatch?: boolean) => void
+	) {
+	const user = this as UserDocument;
+  bcrypt.compare(candidatePassword, user.password, (err: Error, isMatch: boolean) => {
+    if (err) 
+			return callback(err);
+
     callback(null, isMatch);
   });
 };
 
 
-const User = mongoose.model<IUser>('User', userSchema);
+const User = mongoose.model<UserDocument>('User', userSchema);
 
 export default User;

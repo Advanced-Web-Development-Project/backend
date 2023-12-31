@@ -5,9 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "tsc && jest --detectOpenHandles --forceExit",
-    "start": "tsc && node ./dist/src/app.js",
+    "start": "tsc && node dist/src/app.js",
     "lint": "eslint . --ext .ts",
-    "dev": "nodemon --exec ts-node ./src/app.ts"
+    "dev": "nodemon --exec ts-node src/app.ts"
   },
   "keywords": [],
   "author": "",

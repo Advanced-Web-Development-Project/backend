@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 
+
+// USER DATA GENERATORS
 const generateValidUserData = () => ({
   email: faker.internet.email(),
   password: faker.internet.password({ length: 8 }),
@@ -23,9 +25,21 @@ const generateDuplicateUsernameUserData = (existingUser) => ({
 });
 
 
+
+// POST DATA GENERATORS
+const generateValidPostData = () => ({
+	title: faker.lorem.sentence(),
+	content: faker.lorem.paragraph(),
+	tag: faker.lorem.word(),
+	image: faker.image.url(),
+	video: faker.internet.url(),
+});
+
+
 export default {
   generateValidUserData,
   generateInvalidEmailUserData,
   generateDuplicateEmailUserData,
 	generateDuplicateUsernameUserData,
+	generateValidPostData,
 };
