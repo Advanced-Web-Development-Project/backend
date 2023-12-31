@@ -9,7 +9,11 @@ const HttpResponse = require('../utils/httpResponse');
 const getAllPosts = async (req, res) => {
   try {
     const posts = await postService.getAllPosts();
-
+    posts.forEach(post => {
+      post['id'] = post._id;
+      delete post._id;
+    });
+    console.log("@@@@", posts)
     let response = new HttpResponse()
       .withStatusCode(200)
       .withData(posts)

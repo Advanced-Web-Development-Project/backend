@@ -5,7 +5,7 @@ const Post = require('../models/Post'); // Assuming you have a Mongoose model fo
 
 const getAllPosts = async () => {
   try {
-    return await Post.find(); // return all posts
+    return await Post.find().populate('user');; // return all posts
   } catch (error) {
     throw new Error('Error fetching posts, error: ', error.message || error); // if error.message is undefined, use error instead
   }
@@ -14,7 +14,7 @@ const getAllPosts = async () => {
 const getPost = async (postId) => {
 
   try {
-    return await Post.findById(postId)
+    return await Post.findById(postId).populate('user');
   } catch (error) {
     throw new Error(error.message)
   }
