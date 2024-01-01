@@ -1,4 +1,5 @@
 import multer from 'multer';
+// import { resolve } from 'path';
 
 // Define the storage for multer. This determines how the uploaded files are stored.
 // In this case, the files are stored on disk in the 'public/images' directory.
