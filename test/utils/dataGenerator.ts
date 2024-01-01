@@ -1,5 +1,7 @@
-const { faker } = require('@faker-js/faker');
+import { faker } from '@faker-js/faker';
 
+
+// USER DATA GENERATORS
 const generateValidUserData = () => ({
   email: faker.internet.email(),
   password: faker.internet.password({ length: 8 }),
@@ -23,9 +25,26 @@ const generateDuplicateUsernameUserData = (existingUser) => ({
 });
 
 
-module.exports = {
+
+// POST DATA GENERATORS
+const generateValidPostData = () => ({
+	title: faker.lorem.sentence(),
+	content: faker.lorem.paragraph(),
+	imagePath: faker.image.urlPlaceholder({format: 'png'}),
+});
+
+const generateValidPostDataWithoutImage = () => ({
+	title: faker.lorem.sentence(),
+	content: faker.lorem.paragraph(),
+});
+
+
+
+export default {
   generateValidUserData,
   generateInvalidEmailUserData,
   generateDuplicateEmailUserData,
 	generateDuplicateUsernameUserData,
+	generateValidPostData,
+	generateValidPostDataWithoutImage,
 };

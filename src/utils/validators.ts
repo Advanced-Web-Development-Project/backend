@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const loginSchema = Joi.object().keys({
   email: Joi.string().trim().email().required(),
@@ -13,15 +13,15 @@ const registerSchema = Joi.object().keys({
 });
 
 const postSchema = Joi.object().keys({
-  user: Joi.string().trim().required(),
+  // user: Joi.string().trim().required(),
   title: Joi.string().trim().required(),
   content: Joi.string().trim().required(),
-  imagePath: Joi.string().trim().required(),
-  likes: Joi.array().unique(),
-  dislikes: Joi.array().unique(),
+  imagePath: Joi.string().trim(),
+  // likes: Joi.array().unique(),
+  // dislikes: Joi.array().unique(),
 })
 
-const validateSchema = (schema, data) => {
+const validateSchema = (schema: Joi.Schema, data: object) => {
   const { error } = schema.validate(data, { abortEarly: false });
   if (error) {
     const errorMessages = error.details.map((detail) => {
@@ -32,7 +32,7 @@ const validateSchema = (schema, data) => {
   return null
 }
 
-module.exports = {
+export {
   loginSchema,
   registerSchema,
   postSchema,

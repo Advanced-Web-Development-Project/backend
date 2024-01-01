@@ -1,11 +1,12 @@
-const User = require('../models/User');
-const { registerSchema, validateSchema } = require('../utils/validators');
-const HttpResponse = require('../utils/httpResponse');
+import User from '../models/User';
+import { registerSchema, validateSchema } from '../utils/validators';
+import HttpResponse from '../utils/httpResponse';
+import { Request, Response, NextFunction } from 'express';
 
-const login = (req, res) => {
+const login = (req: Request, res: Response) => {
   const token = req.user.generateJWT(); // req.user is set by passport
   const userInfo = req.user.toJSON();
-  let response = new HttpResponse()
+  const response = new HttpResponse()
     .withStatusCode(200)
     .withMessage('Logged in successfully')
     .withData({ token, userInfo })
@@ -13,10 +14,10 @@ const login = (req, res) => {
   res.json(response);
 };
 
-const register = async (req, res, next) => {
+const register = async (req: Request, res: Response, next: NextFunction) => {
   const errorMessages = validateSchema(registerSchema, req.body);
   if (errorMessages) {
-    let response = new HttpResponse()
+    const response = new HttpResponse()
       .withStatusCode(400)
       .addError(errorMessages)
       .build();
@@ -29,7 +30,7 @@ const register = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
     const existingUsername = await User.findOne({ username });
     if (existingUser) {
-      let response = new HttpResponse()
+      const response = new HttpResponse()
         .withStatusCode(409)
         .addError('A user with this email already exists')
         .build();
@@ -37,7 +38,7 @@ const register = async (req, res, next) => {
       return res.status(409).json(response);
     }
     if (existingUsername) {
-      let response = new HttpResponse()
+      const response = new HttpResponse()
         .withStatusCode(409)
         .addError('A user with this username already exists')
         .build();
@@ -45,7 +46,7 @@ const register = async (req, res, next) => {
       return res.status(409).json(response);
     }
 
-    const newUser = await User.create({
+    await User.create({
       provider: 'email',
       email,
       password,
@@ -53,7 +54,7 @@ const register = async (req, res, next) => {
       name,
     });
 
-    let response = new HttpResponse()
+    const response = new HttpResponse()
       .withStatusCode(201)
       .withMessage('User created successfully')
       .build();
@@ -65,8 +66,8 @@ const register = async (req, res, next) => {
 };
 
 // TODO: Implement logout
-const logout = (req, res, next) => {
-  let response = new HttpResponse()
+const logout = (req: Request, res: Response) => {
+  const response = new HttpResponse()
     .withStatusCode(200)
     .withMessage('Logged out successfully')
     .build();
@@ -74,4 +75,4 @@ const logout = (req, res, next) => {
   res.status(200).json(response);
 };
 
-module.exports = { login, register, logout };
+export default { login, register, logout };

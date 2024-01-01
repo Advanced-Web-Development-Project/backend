@@ -1,11 +1,11 @@
-const passport = require('passport');
-const HttpResponse = require('../utils/httpResponse');
-const { loginSchema, validateSchema } = require('../utils/validators');
+import passport from 'passport';
+import HttpResponse from '../utils/httpResponse';
+import { loginSchema, validateSchema } from '../utils/validators';
 
 const validateAndAuthenticate = (req, res, next) => {
   const errorMessages = validateSchema(loginSchema, req.body);
   if (errorMessages) {
-    let response = new HttpResponse()
+    const response = new HttpResponse()
       .withStatusCode(400)
       .addError(errorMessages)
       .build();
@@ -32,4 +32,4 @@ const validateAndAuthenticate = (req, res, next) => {
   })(req, res, next);
 };
 
-module.exports = validateAndAuthenticate;
+export default validateAndAuthenticate;

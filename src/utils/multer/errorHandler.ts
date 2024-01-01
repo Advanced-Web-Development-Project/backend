@@ -1,6 +1,6 @@
-const multer = require('multer');
-
-function errorHandler(err, req, res, next) {
+import multer from 'multer';
+import { Request, Response, NextFunction } from 'express';
+function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
 	if (err instanceof multer.MulterError) {
 			// Handle Multer-specific errors (e.g., file size limit)
 			res.status(500).json({ error: err.message });
@@ -13,4 +13,4 @@ function errorHandler(err, req, res, next) {
 	}
 }
 
-module.exports = errorHandler;
+export default errorHandler;

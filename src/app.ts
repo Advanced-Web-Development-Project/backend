@@ -1,13 +1,14 @@
-require('dotenv').config();
-const { join } = require('path');
-const express = require('express');
-const mongoose = require('mongoose');
-const routes = require('./routes/index');
-const passport = require('passport');
-const cors = require('cors');
+import { join } from 'path';
+import express, { Express } from 'express';
+import mongoose from 'mongoose';
+import passport from 'passport';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import routes from './routes/index';
+dotenv.config();
 
 // We need to export the createApp function for testing purposes
-const createApp = () => {
+const createApp = (): Express => {
   const app = express();
 
   // middlewares
@@ -42,7 +43,7 @@ const startServer = () => {
 };
 
 // Export the createApp function for testing purposes
-module.exports = { createApp, startServer };
+export { createApp, startServer };
 
 // If this script is run directly, start the server
 if (require.main === module) {

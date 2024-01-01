@@ -1,7 +1,7 @@
-const { Router } = require('express');
-const authenticateRequest = require('../middlewares/requireLocalAuth');
-const authController = require('../controllers/authController');
-const passport = require('passport');
+import { Router } from 'express';
+import authenticateRequest from '../middlewares/requireLocalAuth';
+import authController from '../controllers/authController';
+import passport from 'passport';
 
 const router = Router();
 
@@ -20,4 +20,4 @@ router.get('/google/callback', passport.authenticate('google', {
   authController.login
 ); 
 
-module.exports = router;
+export default router;

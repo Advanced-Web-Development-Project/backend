@@ -1,6 +1,6 @@
-const request = require('supertest');
-const app = require('./utils/testSetup');
-const generator = require('./utils/dataGenerator');
+import request from 'supertest';
+import app from './utils/testSetup';
+import generator from './utils/dataGenerator';
 
 describe('local auth API Test', () => {
   const validUser = generator.generateValidUserData();
@@ -68,8 +68,8 @@ describe('local auth API Test', () => {
     expect(res.statusCode).toEqual(400); // 400 for bad request
   });
 
-	console.log(validUser);
-	console.log(invalidEmailUser);
-	console.log(duplicateEmailUser);
-	console.log(duplicateUsernameUser);
+	// console.log(validUser);
+	// console.log(invalidEmailUser);
+	// console.log(duplicateEmailUser);
+	// console.log(duplicateUsernameUser);
 });

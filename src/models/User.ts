@@ -1,22 +1,35 @@
-const mongoose = require('mongoose');
-const { isEmail } = require('validator');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const moment = require('moment-timezone');
+import mongoose from 'mongoose';
+import validator from 'validator';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import moment from 'moment-timezone';
+
+export interface UserInput {
+  email: string;
+  password?: string; // Only required for local strategy
+  username: string;
+  name: string;
+}
+
+export interface UserDocument extends UserInput, mongoose.Document {
+  provider: string;
+  googleId?: string; // Only required for google strategy
+  createdAt: Date;
+  updatedAt: Date;
+  toJSON(): object;
+  generateJWT(): string;
+  comparePassword(candidatePassword: string, callback: (err: Error | null, isMatch?: boolean) => void): void;
+}
 
 const userSchema = new mongoose.Schema(
   {
-    provider: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: [true, 'Email is required'],
       unique: true,
       lowercase: true,
       trim: true,
-      validate: [isEmail, 'Email is invalid'],
+      validate: [validator.isEmail, 'Please enter a valid email'],
     },
     password: {
       type: String,
@@ -33,6 +46,10 @@ const userSchema = new mongoose.Schema(
       required: [true, 'name is required'],
       trim: true,
     },
+    provider: {
+      type: String,
+      required: true,
+    },
     googleId: {
       type: String,
       unique: true,
@@ -42,9 +59,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-
-
-userSchema.methods.toJSON = function () {
+userSchema.methods.toJSON = function (): object {
   const userObject = this.toObject();
 
   // The timestamps are stored in UTC in the database, but we want to display them in the user's local timezone
@@ -62,7 +77,7 @@ userSchema.methods.toJSON = function () {
   };
 };
 
-userSchema.methods.generateJWT = function () {
+userSchema.methods.generateJWT = function (): string {
   const token = jwt.sign(
     {
       expiresIn: '12h',
@@ -75,27 +90,31 @@ userSchema.methods.generateJWT = function () {
   return token;
 };
 
-// OLD CODE INSTEAD OF "REGISTER USER"
 // use a function before doc saved to db
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function (this: UserDocument, next) {
   // Only hash the password if it has been modified (or is new)
-  if (!this.isModified('password'))
-    return next();
+  if (!this.isModified('password')) return next();
 
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-userSchema.methods.comparePassword = function (candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    if (err) {
-      return callback(err);
-    }
+
+userSchema.methods.comparePassword = function (
+	candidatePassword: string, 
+	callback: (err: Error | null, isMatch?: boolean) => void
+	) {
+	const user = this as UserDocument;
+  bcrypt.compare(candidatePassword, user.password, (err: Error, isMatch: boolean) => {
+    if (err) 
+			return callback(err);
+
     callback(null, isMatch);
   });
 };
 
-const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+const User = mongoose.model<UserDocument>('User', userSchema);
+
+export default User;

@@ -1,6 +1,6 @@
-const passport = require('passport');
-const PassportLocalStrategy = require('passport-local').Strategy;
-const User = require('../models/User');
+import passport from 'passport';
+import { Strategy as PassportLocalStrategy } from 'passport-local';
+import User from '../models/User';
 
 const passportLogin = new PassportLocalStrategy(
   {
@@ -17,12 +17,11 @@ const passportLogin = new PassportLocalStrategy(
       }
 
       user.comparePassword(password, function (err, isMatch) {
-        if (err) {
-          return done(err);
-        }
-        if (!isMatch) {
-          return done(null, false, 'Incorrect password');
-        }
+        if (err) 
+					return done(err);
+				
+        if (!isMatch)
+          return done(null, false, { message: 'Incorrect password.' });
 
         return done(null, user);
       });
