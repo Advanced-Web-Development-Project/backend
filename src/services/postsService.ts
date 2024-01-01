@@ -5,18 +5,18 @@ import Post from '../models/Post'; // Assuming you have a Mongoose model for Pos
 
 const getAllPosts = async () => {
   try {
-    return await Post.find(); // return all posts
+    return await Post.find().populate('user'); // return all posts
   } catch (error) {
-    throw new Error('Error fetching posts'); // if error.message is undefined, use error instead
+    throw new Error(`Error fetching all posts: ${error.message}`);
   }
 };
 
 const getPost = async (postId) => {
 
   try {
-    return await Post.findById(postId)
+    return await Post.findById(postId).populate('user');
   } catch (error) {
-    throw new Error(error.message)
+    throw new Error(`Error fetching single post: ${error.message}`);
   }
 };
 
@@ -24,8 +24,7 @@ const createPost = async (post) => {
   try {
     return await Post.create(post);
   } catch (error) {
-    console.log(error)
-    throw new Error('Error creating post')
+    throw new Error(`Error creating post: ${error.message}`);
   }
 };
 
@@ -33,16 +32,22 @@ const updatePost = async (postId, post) => {
   try {
     return await Post.findByIdAndUpdate(postId, post, { new: true });
   } catch (error) {
-    throw new Error('Error updating post')
+    throw new Error(`Error updating post: ${error.message}`);
   }
 };
 
 const updatePostFields = async (postId, fieldsToUpdate) => {
   try {
-    // Use $set to update specific fields
-    return await Post.findByIdAndUpdate(postId, { $set: fieldsToUpdate }, { new: true });
+    // Check if fieldsToUpdate contains $push or $pull keys (This is for the likes / dislikes arrays)
+    if ('$push' in fieldsToUpdate || '$pull' in fieldsToUpdate) {
+      // Directly use the fieldsToUpdate for $push or $pull operations
+      return await Post.findByIdAndUpdate(postId, fieldsToUpdate, { new: true });
+    } else {
+      // Use $set for other types of updates
+      return await Post.findByIdAndUpdate(postId, { $set: fieldsToUpdate }, { new: true });
+    }
   } catch (error) {
-    throw new Error('Error updating post fields');
+    throw new Error(`Error updating post fields: ${error.message}`);
   }
 };
 
@@ -51,7 +56,7 @@ const deletePost = async (postId) => {
   try {
     return await Post.findByIdAndDelete(postId);
   } catch (error) {
-    throw new Error('Error deleting post, error')
+    throw new Error(`Error deleting post: ${error.message}`);
   }
 };
 

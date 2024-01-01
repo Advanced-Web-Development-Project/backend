@@ -30,8 +30,14 @@ const generateDuplicateUsernameUserData = (existingUser) => ({
 const generateValidPostData = () => ({
 	title: faker.lorem.sentence(),
 	content: faker.lorem.paragraph(),
-	image: faker.image.url(),
+	imagePath: faker.image.urlPlaceholder({format: 'png'}),
 });
+
+const generateValidPostDataWithoutImage = () => ({
+	title: faker.lorem.sentence(),
+	content: faker.lorem.paragraph(),
+});
+
 
 
 export default {
@@ -40,4 +46,5 @@ export default {
   generateDuplicateEmailUserData,
 	generateDuplicateUsernameUserData,
 	generateValidPostData,
+	generateValidPostDataWithoutImage,
 };

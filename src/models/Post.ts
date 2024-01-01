@@ -1,10 +1,24 @@
 import mongoose from 'mongoose';
 
+export interface PostInput {
+	title: string;
+	content: string;
+	imagePath?: string; // Posts may not have an image, default image will be used
+}
+
+export interface PostDocument extends PostInput, mongoose.Document {
+	user: mongoose.Types.ObjectId;
+	likes: string[];
+	dislikes: string[];
+	createdAt: Date;
+	updatedAt: Date;
+}
+
 const postSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      ref: 'User',
       required: true,
     },
     title: {
@@ -17,7 +31,7 @@ const postSchema = new mongoose.Schema(
     },
     imagePath: {
       type: String,
-      default: "/images/default-post-image.jpg",
+      default: "public/images/default/default-post-image.png",
     },
     likes: {
       type: [String],
@@ -31,6 +45,6 @@ const postSchema = new mongoose.Schema(
   { timestamps: true, autoIndex: false }
 );
 
-const Post = mongoose.model('Post', postSchema);
+const Post = mongoose.model<PostDocument>('Post', postSchema);
 
 export default Post;

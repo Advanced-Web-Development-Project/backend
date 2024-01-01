@@ -9,8 +9,9 @@ content-type: application/json
 token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIxMmgiLCJpZCI6IjY1OTFlZjUyMjcwN2QxOWIyYzBiYjk3ZSIsInByb3ZpZGVyIjoiZW1haWwiLCJlbWFpbCI6InRlc3QxMjNAZ21haWwuY29tIiwiaWF0IjoxNzA0MDY2NDg5fQ.8nW7NG-tGSy0IFRIjYdc1P0N2o3e90M86xqjOKLVMdc
 
 {
-    "title": "post title test no image",
-    "content": "post content test no image"
+    "title": "post title test",
+    "imagePath": "/image/path",
+    "content": "post content test"
 }
 
 ### Invalid post schema - no user, no title
