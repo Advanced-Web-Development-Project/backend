@@ -50,18 +50,20 @@ const getPost = async (req, res) => {
 const createPost = async (req, res) => {
 
   try {
-
     const postData = req.body
-
     const errorMessages = validateSchema(postSchema, postData)
     if (errorMessages) {
       const response = new HttpResponse().withStatusCode(422).addError(errorMessages).build();
       return res.status(422).json(response);
     }
 
+		// add post fields that are not in the request body
+		postData.user = req.user._id;
+		postData.imagePath = req.file ? req.file.file : null;
+
     const newPost = await postService.createPost(postData);
-    const response = new HttpResponse().withStatusCode(200).withData(newPost).build();
-    return res.status(200).json(response);
+    const response = new HttpResponse().withStatusCode(201).withData(newPost).build();
+    return res.status(201).json(response);
 
   } catch (error) {
     console.log(error)

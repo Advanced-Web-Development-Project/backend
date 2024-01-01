@@ -13,12 +13,12 @@ const registerSchema = Joi.object().keys({
 });
 
 const postSchema = Joi.object().keys({
-  user: Joi.string().trim().required(),
+  // user: Joi.string().trim().required(),
   title: Joi.string().trim().required(),
   content: Joi.string().trim().required(),
-  imagePath: Joi.string().trim().required(),
-  likes: Joi.array().unique(),
-  dislikes: Joi.array().unique(),
+  imagePath: Joi.string().trim(),
+  // likes: Joi.array().unique(),
+  // dislikes: Joi.array().unique(),
 })
 
 const validateSchema = (schema: Joi.Schema, data: object) => {

@@ -6,13 +6,11 @@ content-type: application/json
 ###
 POST http://localhost:8000/posts/
 content-type: application/json
-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIxMmgiLCJpZCI6IjY1OTFlZjUyMjcwN2QxOWIyYzBiYjk3ZSIsInByb3ZpZGVyIjoiZW1haWwiLCJlbWFpbCI6InRlc3QxMjNAZ21haWwuY29tIiwiaWF0IjoxNzA0MDYyODA0fQ.XzjeNlIMUMdh-9s76m_ytaszgjtRtVMo5vzGDPJe3j8
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIxMmgiLCJpZCI6IjY1OTFlZjUyMjcwN2QxOWIyYzBiYjk3ZSIsInByb3ZpZGVyIjoiZW1haWwiLCJlbWFpbCI6InRlc3QxMjNAZ21haWwuY29tIiwiaWF0IjoxNzA0MDY2NDg5fQ.8nW7NG-tGSy0IFRIjYdc1P0N2o3e90M86xqjOKLVMdc
 
 {
-    "user": "65807eee6037cf53effee617", 
-    "title": "post check2",
-    "imagePath": "/image/path",
-    "content": "This is a post check content"
+    "title": "post title test no image",
+    "content": "post content test no image"
 }
 
 ### Invalid post schema - no user, no title

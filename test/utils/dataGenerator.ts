@@ -30,9 +30,7 @@ const generateDuplicateUsernameUserData = (existingUser) => ({
 const generateValidPostData = () => ({
 	title: faker.lorem.sentence(),
 	content: faker.lorem.paragraph(),
-	tag: faker.lorem.word(),
 	image: faker.image.url(),
-	video: faker.internet.url(),
 });
 
 

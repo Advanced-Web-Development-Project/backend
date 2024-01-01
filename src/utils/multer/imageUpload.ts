@@ -5,7 +5,9 @@ import { resolve } from 'path';
 // In this case, the files are stored on disk in the 'public/images' directory.
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, resolve(__dirname, '../../../public/images'));
+		// absolute path, we might use for production
+    // cb(null, resolve(__dirname, '../../../public/images')); 
+		cb(null, 'public/images'); // relative path, we use for development
   },
   filename: function (req, file, cb) {
     // Split the original file name by '.' to get the file extension.
