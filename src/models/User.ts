@@ -1,27 +1,29 @@
-import mongoose from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import moment from 'moment-timezone';
 
-export interface UserInput {
+export interface IUser {
   email: string;
   password?: string; // Only required for local strategy
   username: string;
   name: string;
+	provider: string;
+  googleId?: string; // Only required for google strategy
+	createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface UserDocument extends UserInput, mongoose.Document {
-  provider: string;
-  googleId?: string; // Only required for google strategy
-  createdAt: Date;
-  updatedAt: Date;
+export interface IUserMethods {
   toJSON(): object;
   generateJWT(): string;
   comparePassword(candidatePassword: string, callback: (err: Error | null, isMatch?: boolean) => void): void;
 }
 
-const userSchema = new mongoose.Schema(
+type UserModel = Model<IUser, Record<string, never>, IUserMethods>;
+
+const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
     email: {
       type: String,
@@ -60,20 +62,20 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.toJSON = function (): object {
-  const userObject = this.toObject();
+  // const userObject = this.toObject();
 
-  // The timestamps are stored in UTC in the database, but we want to display them in the user's local timezone
-  userObject.createdAt = moment(this.createdAt).tz('Asia/Jerusalem').format();
-  userObject.updatedAt = moment(this.updatedAt).tz('Asia/Jerusalem').format();
+  // // The timestamps are stored in UTC in the database, but we want to display them in the user's local timezone
+  // userObject.createdAt = moment(this.createdAt).tz('Asia/Jerusalem').format();
+  // userObject.updatedAt = moment(this.updatedAt).tz('Asia/Jerusalem').format();
 
   return {
-    id: userObject._id,
-    provider: userObject.provider,
-    email: userObject.email,
-    username: userObject.username,
-    name: userObject.name,
-    createdAt: userObject.createdAt,
-    updatedAt: userObject.updatedAt,
+    id: this._id,
+    provider: this.provider,
+    email: this.email,
+    username: this.username,
+    name: this.name,
+    createdAt: moment(this.createdAt).tz('Asia/Jerusalem').format(),
+    updatedAt: moment(this.updatedAt).tz('Asia/Jerusalem').format(),
   };
 };
 
@@ -91,7 +93,7 @@ userSchema.methods.generateJWT = function (): string {
 };
 
 // use a function before doc saved to db
-userSchema.pre('save', async function (this: UserDocument, next) {
+userSchema.pre('save', async function (next) {
   // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) return next();
 
@@ -105,7 +107,7 @@ userSchema.methods.comparePassword = function (
 	candidatePassword: string, 
 	callback: (err: Error | null, isMatch?: boolean) => void
 	) {
-	const user = this as UserDocument;
+	const user = this as IUser;
   bcrypt.compare(candidatePassword, user.password, (err: Error, isMatch: boolean) => {
     if (err) 
 			return callback(err);
@@ -115,6 +117,6 @@ userSchema.methods.comparePassword = function (
 };
 
 
-const User = mongoose.model<UserDocument>('User', userSchema);
+const User = model<IUser, UserModel>('User', userSchema);
 
 export default User;

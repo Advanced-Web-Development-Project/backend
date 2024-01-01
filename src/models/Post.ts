@@ -1,23 +1,21 @@
-import mongoose from 'mongoose';
+import { model, Schema, Types  } from 'mongoose';
 
-export interface PostInput {
+export interface IPost {
+	user: Types.ObjectId;
 	title: string;
 	content: string;
 	imagePath?: string; // Posts may not have an image, default image will be used
-}
-
-export interface PostDocument extends PostInput, mongoose.Document {
-	user: mongoose.Types.ObjectId;
-	likes: string[];
-	dislikes: string[];
+	likes: Types.Array<string>;
+	dislikes: Types.Array<string>;
 	createdAt: Date;
 	updatedAt: Date;
 }
 
-const postSchema = new mongoose.Schema(
+
+const postSchema = new Schema<IPost>(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
@@ -45,6 +43,6 @@ const postSchema = new mongoose.Schema(
   { timestamps: true, autoIndex: false }
 );
 
-const Post = mongoose.model<PostDocument>('Post', postSchema);
+const Post = model<IPost>('Post', postSchema);
 
 export default Post;
