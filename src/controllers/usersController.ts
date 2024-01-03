@@ -70,7 +70,7 @@ const deleteUser = async (req: Request, res: Response) => {
 	if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
 		const response = new HttpResponse().withStatusCode(400).addError("Invalid id").build();
 		return res.status(400).json(response);
-	};
+	}
 	// if the user doesn't exist, return 404 not found
 	const user = await userService.getUserById(req.params.id);
 	if (!user) {
