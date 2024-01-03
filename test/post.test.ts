@@ -69,7 +69,7 @@ describe('post API Test', () => {
 			.set('token', `${token}`)
 			.send(postData);
 
-		expect(res.statusCode).toEqual(422); // 422 for invalid data
+		expect(res.statusCode).toEqual(400); // 400 for invalid data bad request
 		const numberOfPosts = await request(app).get('/posts');
 		expect(numberOfPosts.body.data.length).toEqual(2); // there should be 2 posts from previous tests
 	});
@@ -82,7 +82,7 @@ describe('post API Test', () => {
 			.set('token', `${token}`)
 			.send(postData);
 
-		expect(res.statusCode).toEqual(422); // 422 for invalid data
+		expect(res.statusCode).toEqual(400); // 400 for invalid data bad request
 		const numberOfPosts = await request(app).get('/posts');
 		expect(numberOfPosts.body.data.length).toEqual(2); // there should be 2 posts from previous tests
 	});
