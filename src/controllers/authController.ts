@@ -1,7 +1,7 @@
-import User from '../models/User';
 import { registerSchema, validateSchema } from '../utils/validators';
 import HttpResponse from '../utils/httpResponse';
 import { Request, Response, NextFunction } from 'express';
+import userService from '../services/usersService';
 
 const login = (req: Request, res: Response) => {
   const token = req.user.generateJWT(); // req.user is set by passport
@@ -27,8 +27,8 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password, name, username } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
-    const existingUsername = await User.findOne({ username });
+    const existingUser = await userService.getUserByEmail(email);
+    const existingUsername = await userService.getUserByUsername(username);
     if (existingUser) {
       const response = new HttpResponse()
         .withStatusCode(409)
@@ -46,12 +46,12 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(409).json(response);
     }
 
-    await User.create({
+    await userService.createUser({
       provider: 'email',
-      email,
-      password,
-      username,
-      name,
+      email: email,
+      password: password,
+      username: username,
+      name: name,
     });
 
     const response = new HttpResponse()

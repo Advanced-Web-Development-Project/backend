@@ -13,13 +13,18 @@ const registerSchema = Joi.object().keys({
 });
 
 const postSchema = Joi.object().keys({
-  // user: Joi.string().trim().required(),
   title: Joi.string().trim().required(),
   content: Joi.string().trim().required(),
   imagePath: Joi.string().trim(),
-  // likes: Joi.array().unique(),
-  // dislikes: Joi.array().unique(),
 })
+
+const updateUserSchema = Joi.object().keys({
+  email: Joi.string().trim().email(),
+  password: Joi.string().trim().min(6),
+  username: Joi.string().trim().min(4).max(20).regex(/^[a-zA-Z0-9_]+$/),
+  name: Joi.string().trim(),
+  avatar: Joi.string().trim(),
+});
 
 const validateSchema = (schema: Joi.Schema, data: object) => {
   const { error } = schema.validate(data, { abortEarly: false });
@@ -36,5 +41,6 @@ export {
   loginSchema,
   registerSchema,
   postSchema,
+	updateUserSchema,
   validateSchema
 };

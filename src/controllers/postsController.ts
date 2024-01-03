@@ -38,8 +38,8 @@ const createPost = async (req, res) => {
 	const postData = req.body;
 	const errorMessages = validateSchema(postSchema, postData);
 	if (errorMessages) {
-		const response = new HttpResponse().withStatusCode(422).addError(errorMessages).build();
-		return res.status(422).json(response);
+		const response = new HttpResponse().withStatusCode(400).addError(errorMessages).build();
+		return res.status(400).json(response);
 	}
 
   try {
