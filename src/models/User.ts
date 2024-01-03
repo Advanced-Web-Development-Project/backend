@@ -1,18 +1,20 @@
-import { Model, Schema, model } from 'mongoose';
+import { Model, Schema, model, Types } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import moment from 'moment-timezone';
 
 export interface IUser {
+	_id?: Types.ObjectId;
   email: string;
   password?: string; // Only required for local strategy
   username: string;
   name: string;
+	avatar?: string;
 	provider: string;
   googleId?: string; // Only required for google strategy
-	createdAt: Date;
-  updatedAt: Date;
+	createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface IUserMethods {
@@ -48,6 +50,10 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       required: [true, 'name is required'],
       trim: true,
     },
+		avatar: {
+			type: String,
+			default: "public/images/default/default-avatar.png",
+		},
     provider: {
       type: String,
       required: true,
@@ -74,6 +80,7 @@ userSchema.methods.toJSON = function (): object {
     email: this.email,
     username: this.username,
     name: this.name,
+		avatar: this.avatar,
     createdAt: moment(this.createdAt).tz('Asia/Jerusalem').format(),
     updatedAt: moment(this.updatedAt).tz('Asia/Jerusalem').format(),
   };

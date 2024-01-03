@@ -21,7 +21,7 @@ const passportLogin = new PassportLocalStrategy(
 					return done(err);
 				
         if (!isMatch)
-          return done(null, false, { message: 'Incorrect password.' });
+          return done(null, false, 'Incorrect password');
 
         return done(null, user);
       });
