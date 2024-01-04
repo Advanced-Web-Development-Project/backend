@@ -3,6 +3,7 @@ import Post from '../models/Post';
 import User, { IUser } from '../models/User';
 import mongoose from 'mongoose';
 
+// create a comment, and add it to the post and user
 const createComment = async (userId, postId, content: string) => {
   const comment = new Comment({
     user: userId,
@@ -35,6 +36,7 @@ const getCommentsByPostId = async (postId) => {
   const comments = populatedComments.map((comment: IComment) => {
     const user = comment.user as IUser;
     return {
+			commentId: comment._id,
       username: user.username,
       content: comment.content,
       createdAt: comment.createdAt,
@@ -56,7 +58,7 @@ const getCommentById = async (commentId) => {
 	}
 };
 
-const updateComment = async (commentId, content) => {
+const updateCommentById = async (commentId, content) => {
 	try {
 		return Comment.findOneAndUpdate({ _id: commentId }, { content }, { new: true });
 	} catch (error) {
@@ -64,9 +66,30 @@ const updateComment = async (commentId, content) => {
 	}
 };
 
+const deleteCommentById = async (userId, postId, commentId) => {
+	try {
+			// Delete the comment
+			await Comment.findByIdAndDelete(commentId);
+			
+			// Remove the comment from the post
+			const post = await Post.findById(postId);
+			post.comments.pull(commentId);
+			await post.save();
+
+			// Remove the comment from the user
+			const user = await User.findById(userId);
+			user.comments.pull(commentId);
+			await user.save();
+	} catch (err) {
+			throw new Error(`Error deleting comment: ${err.message}`);
+	}
+};
+
+
 export default {
-  createComment,
-  getCommentsByPostId,
+	createComment,
+	getCommentsByPostId,
 	getCommentById,
-	updateComment,
+	updateCommentById,
+	deleteCommentById,
 };

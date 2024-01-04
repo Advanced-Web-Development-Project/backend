@@ -115,7 +115,7 @@ describe('Comments API test', () => {
 		// update the comment
 		const commentId = res.body.data._id;
 		const updatedCommentData = generator.generateValidCommentData();
-		const res2 = await request(app).put(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[0]}`).send(updatedCommentData);
+		const res2 = await request(app).patch(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[0]}`).send(updatedCommentData);
 
 		// check if the comment was updated
 		expect(res2.statusCode).toEqual(200);
@@ -125,7 +125,7 @@ describe('Comments API test', () => {
 
 	it('should not update a comment that doesn\'t exist', async () => {
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).put(`/posts/${postIds[1]}/comments/123`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).patch(`/posts/${postIds[1]}/comments/123`).set('token', `${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(404);
 	});
 
@@ -138,15 +138,91 @@ describe('Comments API test', () => {
 		// update the comment with the other user's token
 		const commentId = res.body.data._id;
 		const updatedCommentData = generator.generateValidCommentData();
-		const res2 = await request(app).put(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[1]}`).send(updatedCommentData);
+		const res2 = await request(app).patch(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[1]}`).send(updatedCommentData);
 		expect(res2.statusCode).toEqual(403);
 	});
 
 	it('should not update a comment with invalid post ID', async () => {
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).put(`/posts/123/comments/123`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).patch(`/posts/123/comments/123`).set('token', `${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(400);
 	});
 
+	it('should delete a comment, and remove the references in post and user', async () => {
+		// create a comment
+		const commentData = generator.generateValidCommentData();
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		expect(res.statusCode).toEqual(201);
+
+		// delete the comment
+		const commentId = res.body.data._id;
+		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('token', `${tokens[0]}`);
+		expect(res2.statusCode).toEqual(200);
+
+		// check if the comment was removed from the post
+		const res3 = await request(app).get(`/posts/${postIds[0]}`);
+		expect(res3.body.data.comments).not.toContain(commentId);
+
+		// check if the comment was removed from the user
+		const res4 = await request(app).get(`/users/${generatedUserData[0].username}`);
+		expect(res4.body.data.comments).not.toContain(commentId);
+	});
+
+	it('should not delete a comment from another post', async () => {
+		// create a comment on one post
+		const commentData = generator.generateValidCommentData();
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		expect(res.statusCode).toEqual(201);
+
+		// delete the comment from another post
+		const commentId = res.body.data._id;
+		const res2 = await request(app).delete(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[0]}`);
+		expect(res2.statusCode).toEqual(404);
+	});
+
+	it('should not delete a comment that doesn\'t exist', async () => {
+		const res = await request(app).delete(`/posts/${postIds[0]}/comments/123`).set('token', `${tokens[0]}`);
+		expect(res.statusCode).toEqual(404);
+	});
+
+	it('should not delete a comment with invalid post ID', async () => {
+		// create a comment
+		const commentData = generator.generateValidCommentData();
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		expect(res.statusCode).toEqual(201);
+
+		// try to delete the comment, but with an invalid post ID
+		const commentId = res.body.data._id;
+		const res2 = await request(app).delete(`/posts/123/comments/${commentId}`).set('token', `${tokens[0]}`);
+		expect(res2.statusCode).toEqual(400);
+	});
 	
+	it('should not delete a comment with invalid comment ID', async () => {
+		const res = await request(app).delete(`/posts/${postIds[0]}/comments/123`).set('token', `${tokens[0]}`);
+		expect(res.statusCode).toEqual(404);
+	});
+
+	it('should not delete a comment with invalid token', async () => {
+		// create a comment
+		const commentData = generator.generateValidCommentData();
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		expect(res.statusCode).toEqual(201);
+
+		// try to delete the comment, but with an invalid token
+		const commentId = res.body.data._id;
+		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('token', `${tokens[0]}123`);
+		expect(res2.statusCode).toEqual(401);
+	});
+	
+	it('should not delete a comment with another user\'s token', async () => {
+		// create a comment
+		const commentData = generator.generateValidCommentData();
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		expect(res.statusCode).toEqual(201);
+
+		// try to delete the comment, but with another user's token
+		const commentId = res.body.data._id;
+		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('token', `${tokens[1]}`);
+		expect(res2.statusCode).toEqual(403);
+	});
 });

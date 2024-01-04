@@ -12,10 +12,10 @@ router.post('/', requireJwtAuth, commentController.createComment);
 router.get('/', commentController.getComments);
 
 // // update - update a comment on a post
-router.put('/:commentId', requireJwtAuth, commentController.updateComment);
+router.patch('/:commentId', requireJwtAuth, commentController.updateComment);
 
 // // delete - delete a comment from a post
-// router.delete('/:commentId', requireJwtAuth, commentController.deleteComment);
+router.delete('/:commentId', requireJwtAuth, commentController.deleteComment);
 
 
 export default router;
