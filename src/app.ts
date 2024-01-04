@@ -39,6 +39,7 @@ const startServer = () => {
   mongoose
     .connect(dbURI)
     .then(() => app.listen(8000))
+		.then(() => console.log('Server running on port 8000'))
     .catch((err) => console.log(err));
 };
 
