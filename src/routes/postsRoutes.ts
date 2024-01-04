@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import postController from '../controllers/postsController';
 import requireJwtAuth from '../middlewares/requireJwtAuth';
+import requirePostExists from '../middlewares/requirePostExists';
+import commentRoutes from './commentsRoutes';
 
 const router = Router();
-
 
 // create
 router.post('/', requireJwtAuth, postController.createPost);
@@ -22,8 +23,8 @@ router.delete('/:postId', requireJwtAuth, postController.deletePost);
 router.patch('/:postId/like', requireJwtAuth, postController.likePost);
 router.patch('/:postId/dislike', requireJwtAuth, postController.dislikePost);
 
+// comment routes
+router.use('/:postId/comments', requirePostExists, commentRoutes);
 
-// // Update post specific fields by postId
-// router.patch('/:postId', postController.updatePostFields);
 
 export default router;

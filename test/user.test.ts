@@ -34,7 +34,6 @@ describe('Users API test', () => {
 		tokens.push(res1.body.data.token);
 		tokens.push(res2.body.data.token);
 		tokens.push(res3.body.data.token);
-
 	});
 
 	it('should get all users', async () => {

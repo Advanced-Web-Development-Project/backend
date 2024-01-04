@@ -1,16 +1,18 @@
-import { model, Schema, Types  } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
+import { IComment } from './Comment';
 
 export interface IPost {
-	user: Types.ObjectId;
-	title: string;
-	content: string;
-	imagePath?: string; // Posts may not have an image, default image will be used
-	likes: Types.Array<string>;
-	dislikes: Types.Array<string>;
-	createdAt: Date;
-	updatedAt: Date;
+  _id?: Types.ObjectId;
+  user: Types.ObjectId;
+  title: string;
+  content: string;
+  imagePath?: string; // Posts may not have an image, default image will be used
+  likes: Types.Array<Types.ObjectId>;
+  dislikes: Types.Array<Types.ObjectId>;
+  comments: Types.Array<Types.ObjectId | IComment>;
+  createdAt: Date;
+  updatedAt: Date;
 }
-
 
 const postSchema = new Schema<IPost>(
   {
@@ -29,18 +31,26 @@ const postSchema = new Schema<IPost>(
     },
     imagePath: {
       type: String,
-      default: "public/images/default/default-post-image.png",
+      default: 'public/images/default/default-post-image.png',
     },
     likes: {
-      type: [String],
+      type: [Types.ObjectId],
       default: [],
     },
     dislikes: {
-      type: [String],
+      type: [Types.ObjectId],
+      default: [],
+    },
+    comments: {
+      type: [Types.ObjectId],
+      ref: 'Comment',
       default: [],
     },
   },
-  { timestamps: true, autoIndex: false }
+  {
+    timestamps: true,
+    autoIndex: false,
+  }
 );
 
 const Post = model<IPost>('Post', postSchema);
