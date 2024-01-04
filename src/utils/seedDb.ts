@@ -65,6 +65,7 @@ const createComment = async (token, postId) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const likePost = async (token, postId) => {
   try {
     const response = await axios.patch(`http://localhost:8000/posts/${postId}/like`, {}, {
@@ -79,6 +80,7 @@ const likePost = async (token, postId) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const dislikePost = async (token, postId) => {
   try {
     const response = await axios.patch(`http://localhost:8000/posts/${postId}/dislike`, {}, {
