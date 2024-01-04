@@ -1,10 +1,9 @@
 import commentService from '../services/commentsService';
-import { RequestWithPost } from '../../types/requestWithPost';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { commentSchema, validateSchema } from '../utils/validators';
 import HttpResponse from '../utils/httpResponse';
 
-const createComment = async (req: RequestWithPost, res: Response) => {
+const createComment = async (req: Request, res: Response) => {
 	// Validate request body
 	const errorMessages = validateSchema(commentSchema, req.body);
 	if (errorMessages) {
@@ -13,7 +12,7 @@ const createComment = async (req: RequestWithPost, res: Response) => {
 	}
 
 	const userId = req.user._id;
-	const postId = req.post;
+	const postId = req.params.postId;
 	const content = req.body.content;
 
 	try {
@@ -26,8 +25,8 @@ const createComment = async (req: RequestWithPost, res: Response) => {
 	}
 };
 
-const getComments = async (req: RequestWithPost, res: Response) => {
-	const postId = req.post._id;
+const getComments = async (req: Request, res: Response) => {
+	const postId = req.params.postId;
 	try {
 		const comments = await commentService.getCommentsByPostId(postId);
 		const response = new HttpResponse().withStatusCode(200).withData(comments).build();
