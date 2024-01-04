@@ -1,6 +1,7 @@
 import Comment, { IComment } from '../models/Comment';
 import Post from '../models/Post';
 import User, { IUser } from '../models/User';
+import mongoose from 'mongoose';
 
 const createComment = async (userId, postId, content: string) => {
   const comment = new Comment({
@@ -45,6 +46,9 @@ const getCommentsByPostId = async (postId) => {
 };
 
 const getCommentById = async (commentId) => {
+	if (!mongoose.Types.ObjectId.isValid(commentId)) {
+		return null; // invalid comment ids will not be found
+	}
 	try {
 		return await Comment.findById(commentId);
 	} catch (error) {
@@ -52,8 +56,17 @@ const getCommentById = async (commentId) => {
 	}
 };
 
+const updateComment = async (commentId, content) => {
+	try {
+		return Comment.findOneAndUpdate({ _id: commentId }, { content }, { new: true });
+	} catch (error) {
+		throw new Error(`Error updating comment: ${error.message}`);
+	}
+};
+
 export default {
   createComment,
   getCommentsByPostId,
 	getCommentById,
+	updateComment,
 };

@@ -106,45 +106,47 @@ describe('Comments API test', () => {
 		expect(res.statusCode).toEqual(400);
 	});
 
-	// it('should update a comment', async () => {
-	// 	// create a comment on the post with no comments yet
-	// 	const commentData = generator.generateValidCommentData();
-	// 	const res = await request(app).post(`/posts/${postIds[1]}/comments`).set('token', `${tokens[0]}`).send(commentData);
-	// 	expect(res.statusCode).toEqual(201);
+	it('should update a comment', async () => {
+		// create a comment on the post with no comments yet
+		const commentData = generator.generateValidCommentData();
+		const res = await request(app).post(`/posts/${postIds[1]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		expect(res.statusCode).toEqual(201);
 
-	// 	// update the comment
-	// 	const commentId = res.body.data._id;
-	// 	const updatedCommentData = generator.generateValidCommentData();
-	// 	const res2 = await request(app).put(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[0]}`).send(updatedCommentData);
+		// update the comment
+		const commentId = res.body.data._id;
+		const updatedCommentData = generator.generateValidCommentData();
+		const res2 = await request(app).put(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[0]}`).send(updatedCommentData);
 
-	// 	// check if the comment was updated
-	// 	expect(res2.statusCode).toEqual(200);
-	// 	const res3 = await request(app).get(`/posts/${postIds[1]}/comments`);
-	// 	expect(res3.body.data[0].content).toEqual(updatedCommentData.content);
-	// });
+		// check if the comment was updated
+		expect(res2.statusCode).toEqual(200);
+		const res3 = await request(app).get(`/posts/${postIds[1]}/comments`);
+		expect(res3.body.data[0].content).toEqual(updatedCommentData.content);
+	});
 
-	// it('should not update a non-existent comment', async () => {
-	// 	const commentData = generator.generateValidCommentData();
-	// 	const res = await request(app).put(`/posts/${postIds[1]}/comments/123`).set('token', `${tokens[0]}`).send(commentData);
-	// 	expect(res.statusCode).toEqual(404);
-	// });
+	it('should not update a comment that doesn\'t exist', async () => {
+		const commentData = generator.generateValidCommentData();
+		const res = await request(app).put(`/posts/${postIds[1]}/comments/123`).set('token', `${tokens[0]}`).send(commentData);
+		expect(res.statusCode).toEqual(404);
+	});
 
-	// it('should not update a comment of another user', async () => {
-	// 	// create a comment
-	// 	const commentData = generator.generateValidCommentData();
-	// 	const res = await request(app).post(`/posts/${postIds[1]}/comments`).set('token', `${tokens[0]}`).send(commentData);
-	// 	expect(res.statusCode).toEqual(201);
+	it('should not update a comment of another user', async () => {
+		// create a comment
+		const commentData = generator.generateValidCommentData();
+		const res = await request(app).post(`/posts/${postIds[1]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		expect(res.statusCode).toEqual(201);
 
-	// 	// update the comment with the other user's token
-	// 	const commentId = res.body.data._id;
-	// 	const updatedCommentData = generator.generateValidCommentData();
-	// 	const res2 = await request(app).put(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[1]}`).send(updatedCommentData);
-	// 	expect(res2.statusCode).toEqual(403);
-	// });
+		// update the comment with the other user's token
+		const commentId = res.body.data._id;
+		const updatedCommentData = generator.generateValidCommentData();
+		const res2 = await request(app).put(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[1]}`).send(updatedCommentData);
+		expect(res2.statusCode).toEqual(403);
+	});
 
-	// it('should not update a comment with invalid post ID', async () => {
-	// 	const commentData = generator.generateValidCommentData();
-	// 	const res = await request(app).put(`/posts/123/comments/123`).set('token', `${tokens[0]}`).send(commentData);
-	// 	expect(res.statusCode).toEqual(400);
-	// });
+	it('should not update a comment with invalid post ID', async () => {
+		const commentData = generator.generateValidCommentData();
+		const res = await request(app).put(`/posts/123/comments/123`).set('token', `${tokens[0]}`).send(commentData);
+		expect(res.statusCode).toEqual(400);
+	});
+
+	
 });
