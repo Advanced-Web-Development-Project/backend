@@ -6,12 +6,11 @@ content-type: application/json
 ###
 POST http://localhost:8000/posts/
 content-type: application/json
-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIxMmgiLCJpZCI6IjY1OTFlZjUyMjcwN2QxOWIyYzBiYjk3ZSIsInByb3ZpZGVyIjoiZW1haWwiLCJlbWFpbCI6InRlc3QxMjNAZ21haWwuY29tIiwiaWF0IjoxNzA0MDY2NDg5fQ.8nW7NG-tGSy0IFRIjYdc1P0N2o3e90M86xqjOKLVMdc
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOiIxMmgiLCJpZCI6IjY1OTU4ZGI2MmU0ZmNkYWYwYmQ0ZGVkZCIsInByb3ZpZGVyIjoiZW1haWwiLCJlbWFpbCI6InRlc3QxMjNAZ21haWwuY29tIiwiaWF0IjoxNzA0MzAwODY0fQ.SN_cWwA4PsXF88uhQ81HL-ryA4SreoCjv7CxVyrBTe0
 
 {
-    "title": "post title test",
-    "imagePath": "/image/path",
-    "content": "post content test"
+    "title": "post for comment testing",
+    "content": "lorem ipsum dolor sit amet"
 }
 
 ### Invalid post schema - no user, no title

@@ -2,25 +2,29 @@ import { Model, Schema, model, Types } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import moment from 'moment-timezone';
 
 export interface IUser {
-	_id?: Types.ObjectId;
+  _id?: Types.ObjectId;
   email: string;
   password?: string; // Only required for local strategy
   username: string;
   name: string;
-	avatar?: string;
-	provider: string;
+  avatar?: string;
+  provider: string;
   googleId?: string; // Only required for google strategy
-	createdAt?: Date;
+  posts?: Types.Array<Types.ObjectId>;
+  comments?: Types.Array<Types.ObjectId>;
+  createdAt?: Date;
   updatedAt?: Date;
 }
 
 export interface IUserMethods {
   toJSON(): object;
   generateJWT(): string;
-  comparePassword(candidatePassword: string, callback: (err: Error | null, isMatch?: boolean) => void): void;
+  comparePassword(
+    candidatePassword: string,
+    callback: (err: Error | null, isMatch?: boolean) => void
+  ): void;
 }
 
 type UserModel = Model<IUser, Record<string, never>, IUserMethods>;
@@ -50,10 +54,10 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       required: [true, 'name is required'],
       trim: true,
     },
-		avatar: {
-			type: String,
-			default: "public/images/default/default-avatar.png",
-		},
+    avatar: {
+      type: String,
+      default: 'public/images/default/default-avatar.png',
+    },
     provider: {
       type: String,
       required: true,
@@ -63,26 +67,30 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       unique: true,
       sparse: true,
     },
+    posts: {
+      type: [Types.ObjectId],
+      default: [],
+    },
+    comments: {
+      type: [Types.ObjectId],
+      default: [],
+    },
   },
   { timestamps: true }
 );
 
 userSchema.methods.toJSON = function (): object {
-  // const userObject = this.toObject();
-
-  // // The timestamps are stored in UTC in the database, but we want to display them in the user's local timezone
-  // userObject.createdAt = moment(this.createdAt).tz('Asia/Jerusalem').format();
-  // userObject.updatedAt = moment(this.updatedAt).tz('Asia/Jerusalem').format();
-
   return {
     id: this._id,
     provider: this.provider,
     email: this.email,
     username: this.username,
     name: this.name,
-		avatar: this.avatar,
-    createdAt: moment(this.createdAt).tz('Asia/Jerusalem').format(),
-    updatedAt: moment(this.updatedAt).tz('Asia/Jerusalem').format(),
+    avatar: this.avatar,
+    posts: this.posts,
+    comments: this.comments,
+    createdAt: this.createdAt,
+    updatedAt: this.updatedAt,
   };
 };
 
@@ -109,20 +117,21 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-
 userSchema.methods.comparePassword = function (
-	candidatePassword: string, 
-	callback: (err: Error | null, isMatch?: boolean) => void
-	) {
-	const user = this as IUser;
-  bcrypt.compare(candidatePassword, user.password, (err: Error, isMatch: boolean) => {
-    if (err) 
-			return callback(err);
+  candidatePassword: string,
+  callback: (err: Error | null, isMatch?: boolean) => void
+) {
+  const user = this as IUser;
+  bcrypt.compare(
+    candidatePassword,
+    user.password,
+    (err: Error, isMatch: boolean) => {
+      if (err) return callback(err);
 
-    callback(null, isMatch);
-  });
+      callback(null, isMatch);
+    }
+  );
 };
-
 
 const User = model<IUser, UserModel>('User', userSchema);
 

@@ -1,7 +1,4 @@
-import Post from '../models/Post'; // Assuming you have a Mongoose model for Post
-
-// This file handles the logic for interacting with the database and returning the data.
-// Any changes / formatting of the data should be done here.
+import Post from '../models/Post'; 
 
 const getAllPosts = async () => {
   try {
@@ -12,7 +9,6 @@ const getAllPosts = async () => {
 };
 
 const getPost = async (postId) => {
-
   try {
     return await Post.findById(postId).populate('user');
   } catch (error) {

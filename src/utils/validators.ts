@@ -16,7 +16,11 @@ const postSchema = Joi.object().keys({
   title: Joi.string().trim().required(),
   content: Joi.string().trim().required(),
   imagePath: Joi.string().trim(),
-})
+});
+
+const commentSchema = Joi.object().keys({
+	content: Joi.string().trim().required(),
+});
 
 const updateUserSchema = Joi.object().keys({
   email: Joi.string().trim().email(),
@@ -41,6 +45,7 @@ export {
   loginSchema,
   registerSchema,
   postSchema,
+	commentSchema,
 	updateUserSchema,
   validateSchema
 };

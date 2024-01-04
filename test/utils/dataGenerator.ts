@@ -38,6 +38,15 @@ const generateValidPostDataWithoutImage = () => ({
 	content: faker.lorem.paragraph(),
 });
 
+// COMMENT DATA GENERATORS
+const generateValidCommentData = () => ({
+	content: faker.lorem.paragraph(),
+});
+
+const generateInvalidCommentData = () => ({
+	content: '', // Empty string
+});
+
 
 
 export default {
@@ -47,4 +56,6 @@ export default {
 	generateDuplicateUsernameUserData,
 	generateValidPostData,
 	generateValidPostDataWithoutImage,
+	generateValidCommentData,
+	generateInvalidCommentData,
 };

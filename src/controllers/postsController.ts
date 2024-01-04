@@ -1,12 +1,13 @@
 import postService from '../services/postsService';
 import mongoose from 'mongoose';
+import { Request, Response } from 'express';
 import { postSchema, validateSchema } from '../utils/validators';
 import HttpResponse from '../utils/httpResponse';
 
 // This file handles the logic for handling the requests and sending back the responses.
 // The database interaction is handled by the service file.
 
-const getAllPosts = async (req, res) => {
+const getAllPosts = async (req: Request, res: Response) => {
   try {
     const posts = await postService.getAllPosts();
 
@@ -20,7 +21,7 @@ const getAllPosts = async (req, res) => {
   }
 };
 
-const getPost = async (req, res) => {
+const getPost = async (req: Request, res: Response) => {
   const postId = req.params.postId;
   try {
     const post = await postService.getPost(postId);
@@ -34,7 +35,7 @@ const getPost = async (req, res) => {
   }
 };
 
-const createPost = async (req, res) => {
+const createPost = async (req: Request, res: Response) => {
 	const postData = req.body;
 	const errorMessages = validateSchema(postSchema, postData);
 	if (errorMessages) {
@@ -58,7 +59,7 @@ const createPost = async (req, res) => {
   }
 };
 
-const updatePost = async (req, res) => {
+const updatePost = async (req: Request, res: Response) => {
   try {
     const postId = req.params.postId;
     const post = req.body;
@@ -87,7 +88,7 @@ const updatePost = async (req, res) => {
   }
 };
 
-const deletePost = async (req, res) => {
+const deletePost = async (req: Request, res: Response) => {
   try {
     const postId = req.params.postId;
 
@@ -111,48 +112,15 @@ const deletePost = async (req, res) => {
   }
 };
 
-// const updatePostFields = async (req, res) => {
-//   try {
-//     const postId = req.params.postId;
-//     const updatedLikes = req.body.likes;
-
-//     if (!mongoose.Types.ObjectId.isValid(postId)) {
-//       const response = new HttpResponse().withStatusCode(400).addError(`Invalid post id`).build();
-//       return res.status(400).json(response);
-//     }
-
-//     const postInDb = await postService.getPost(postId);
-//     if (!postInDb) {
-//       const response = new HttpResponse().withStatusCode(400).addError('Post not found').build();
-//       return res.status(404).json(response);
-//     }
-
-//     const updateFields = {
-//       likes: updatedLikes,
-//     };
-
-//     const updatedPost = await postService.updatePostFields(
-//       postId,
-//       updateFields
-//     );
-//     const response = new HttpResponse().withStatusCode(200).withData(updatedPost).build();
-//     return res.status(200).json(response);
-
-//   } catch (error) {
-//     const response = new HttpResponse().withStatusCode(500).addError(`Invalid upvote post`).build();
-//     return res.status(500).json(response);
-//   }
-// };
-
-const likePost = async (req, res) => {
+const likePost = async (req: Request, res: Response) => {
 	updatePostReaction(req, res, 'like');
 };
 
-const dislikePost = async (req, res) => {
+const dislikePost = async (req: Request, res: Response) => {
 	updatePostReaction(req, res, 'dislike');
 };
 
-const updatePostReaction = async (req, res, action) => {
+const updatePostReaction = async (req: Request, res: Response, action) => {
     const postId = req.params.postId;
     const userId = req.user._id;
     try {
