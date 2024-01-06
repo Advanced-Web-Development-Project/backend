@@ -33,8 +33,8 @@ describe('Comments API test', () => {
 		tokens.push(loginResponse1.body.data.token);
 		tokens.push(loginResponse2.body.data.token);
 
-		const postResponse1 = await request(app).post('/posts').set('token', `${tokens[0]}`).send(generatedPostData[0]);
-		const postResponse2 = await request(app).post('/posts').set('token', `${tokens[1]}`).send(generatedPostData[1]);
+		const postResponse1 = await request(app).post('/posts').set('Authorization', `Bearer ${tokens[0]}`).send(generatedPostData[0]);
+		const postResponse2 = await request(app).post('/posts').set('Authorization', `Bearer ${tokens[1]}`).send(generatedPostData[1]);
 
 		postIds.push(postResponse1.body.data._id);
 		postIds.push(postResponse2.body.data._id);
@@ -43,7 +43,7 @@ describe('Comments API test', () => {
 
 	it('should create a comment', async () => {
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(201);
 
 		// get the comment and make sure that it has the correct content
@@ -65,19 +65,19 @@ describe('Comments API test', () => {
 
 	it('should not create a comment with invalid post ID', async () => {
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/123/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/123/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(400);
 	});
 
 	it('should not create a comment with invalid token', async () => {
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}123`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}123`).send(commentData);
 		expect(res.statusCode).toEqual(401);
 	});
 
 	it('should not create a comment with invalid content', async () => {
 		const commentData = generator.generateInvalidCommentData();
-		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(400);
 	});
 
@@ -88,7 +88,7 @@ describe('Comments API test', () => {
 
 		// add another comment by the other user and check if it is returned too
 		const commentData = generator.generateValidCommentData();
-		await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		const res2 = await request(app).get(`/posts/${postIds[0]}/comments`);
 		expect(res2.statusCode).toEqual(200);
 		expect(res2.body.data).toHaveLength(2);
@@ -109,13 +109,13 @@ describe('Comments API test', () => {
 	it('should update a comment', async () => {
 		// create a comment on the post with no comments yet
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/${postIds[1]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[1]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(201);
 
 		// update the comment
 		const commentId = res.body.data._id;
 		const updatedCommentData = generator.generateValidCommentData();
-		const res2 = await request(app).patch(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[0]}`).send(updatedCommentData);
+		const res2 = await request(app).patch(`/posts/${postIds[1]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}`).send(updatedCommentData);
 
 		// check if the comment was updated
 		expect(res2.statusCode).toEqual(200);
@@ -125,38 +125,38 @@ describe('Comments API test', () => {
 
 	it('should not update a comment that doesn\'t exist', async () => {
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).patch(`/posts/${postIds[1]}/comments/123`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).patch(`/posts/${postIds[1]}/comments/123`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(404);
 	});
 
 	it('should not update a comment of another user', async () => {
 		// create a comment
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/${postIds[1]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[1]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(201);
 
 		// update the comment with the other user's token
 		const commentId = res.body.data._id;
 		const updatedCommentData = generator.generateValidCommentData();
-		const res2 = await request(app).patch(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[1]}`).send(updatedCommentData);
+		const res2 = await request(app).patch(`/posts/${postIds[1]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[1]}`).send(updatedCommentData);
 		expect(res2.statusCode).toEqual(403);
 	});
 
 	it('should not update a comment with invalid post ID', async () => {
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).patch(`/posts/123/comments/123`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).patch(`/posts/123/comments/123`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(400);
 	});
 
 	it('should delete a comment, and remove the references in post and user', async () => {
 		// create a comment
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(201);
 
 		// delete the comment
 		const commentId = res.body.data._id;
-		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('token', `${tokens[0]}`);
+		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}`);
 		expect(res2.statusCode).toEqual(200);
 
 		// check if the comment was removed from the post
@@ -171,58 +171,58 @@ describe('Comments API test', () => {
 	it('should not delete a comment from another post', async () => {
 		// create a comment on one post
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(201);
 
 		// delete the comment from another post
 		const commentId = res.body.data._id;
-		const res2 = await request(app).delete(`/posts/${postIds[1]}/comments/${commentId}`).set('token', `${tokens[0]}`);
+		const res2 = await request(app).delete(`/posts/${postIds[1]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}`);
 		expect(res2.statusCode).toEqual(404);
 	});
 
 	it('should not delete a comment that doesn\'t exist', async () => {
-		const res = await request(app).delete(`/posts/${postIds[0]}/comments/123`).set('token', `${tokens[0]}`);
+		const res = await request(app).delete(`/posts/${postIds[0]}/comments/123`).set('Authorization', `Bearer ${tokens[0]}`);
 		expect(res.statusCode).toEqual(404);
 	});
 
 	it('should not delete a comment with invalid post ID', async () => {
 		// create a comment
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(201);
 
 		// try to delete the comment, but with an invalid post ID
 		const commentId = res.body.data._id;
-		const res2 = await request(app).delete(`/posts/123/comments/${commentId}`).set('token', `${tokens[0]}`);
+		const res2 = await request(app).delete(`/posts/123/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}`);
 		expect(res2.statusCode).toEqual(400);
 	});
 	
 	it('should not delete a comment with invalid comment ID', async () => {
-		const res = await request(app).delete(`/posts/${postIds[0]}/comments/123`).set('token', `${tokens[0]}`);
+		const res = await request(app).delete(`/posts/${postIds[0]}/comments/123`).set('Authorization', `Bearer ${tokens[0]}`);
 		expect(res.statusCode).toEqual(404);
 	});
 
 	it('should not delete a comment with invalid token', async () => {
 		// create a comment
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(201);
 
 		// try to delete the comment, but with an invalid token
 		const commentId = res.body.data._id;
-		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('token', `${tokens[0]}123`);
+		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}123`);
 		expect(res2.statusCode).toEqual(401);
 	});
 	
 	it('should not delete a comment with another user\'s token', async () => {
 		// create a comment
 		const commentData = generator.generateValidCommentData();
-		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('token', `${tokens[0]}`).send(commentData);
+		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
 		expect(res.statusCode).toEqual(201);
 
 		// try to delete the comment, but with another user's token
 		const commentId = res.body.data._id;
-		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('token', `${tokens[1]}`);
+		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[1]}`);
 		expect(res2.statusCode).toEqual(403);
 	});
 });

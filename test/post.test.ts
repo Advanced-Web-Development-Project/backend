@@ -21,7 +21,7 @@ describe('post API Test', () => {
     const postData = generator.generateValidPostData(); // With image
     const res = await request(app)
       .post('/posts')
-      .set('token', `${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(postData);
 
     expect(res.statusCode).toEqual(201); // 201 for successful creation
@@ -33,7 +33,7 @@ describe('post API Test', () => {
     const postData = generator.generateValidPostDataWithoutImage();
     const res = await request(app)
       .post('/posts')
-      .set('token', `${token}`)
+      .set('Authorization', `Bearer ${token}`)
       .send(postData);
 
     expect(res.statusCode).toEqual(201); // 201 for successful creation
@@ -66,7 +66,7 @@ describe('post API Test', () => {
 		postData.title = '';
 		const res = await request(app)
 			.post('/posts')
-			.set('token', `${token}`)
+			.set('Authorization', `Bearer ${token}`)
 			.send(postData);
 
 		expect(res.statusCode).toEqual(400); // 400 for invalid data bad request
@@ -79,7 +79,7 @@ describe('post API Test', () => {
 		postData.content = '';
 		const res = await request(app)
 			.post('/posts')
-			.set('token', `${token}`)
+			.set('Authorization', `Bearer ${token}`)
 			.send(postData);
 
 		expect(res.statusCode).toEqual(400); // 400 for invalid data bad request
@@ -107,7 +107,7 @@ describe('post API Test', () => {
 		const postData = generator.generateValidPostData();
 		const res = await request(app)
 			.put(`/posts/${postId}`)
-			.set('token', `${token}`)
+			.set('Authorization', `Bearer ${token}`)
 			.send(postData);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
@@ -121,7 +121,7 @@ describe('post API Test', () => {
 		const postData = generator.generateValidPostData();
 		const res = await request(app)
 			.put(`/posts/${postId}`)
-			.set('token', `${token}`)
+			.set('Authorization', `Bearer ${token}`)
 			.send(postData);
 
 		expect(res.statusCode).toEqual(400); // 400 for invalid data
@@ -131,7 +131,7 @@ describe('post API Test', () => {
 		const postId = createdPosts[1];
 		const res = await request(app)
 			.delete(`/posts/${postId}`)
-			.set('token', `${token}`);
+			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
 		expect(res.body.data._id).toEqual(postId);
@@ -144,7 +144,7 @@ describe('post API Test', () => {
 		const postId = 'invalidPostId';
 		const res = await request(app)
 			.delete(`/posts/${postId}`)
-			.set('token', `${token}`);
+			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(400); // 400 for invalid data
 		const numberOfPosts = await request(app).get('/posts');
@@ -155,7 +155,7 @@ describe('post API Test', () => {
 		const postId = createdPosts[0];
 		const res = await request(app)
 			.patch(`/posts/${postId}/like`)
-			.set('token', `${token}`);
+			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
 		expect(res.body.data._id).toEqual(postId);
@@ -166,7 +166,7 @@ describe('post API Test', () => {
 		const postId = createdPosts[0];
 		const res = await request(app)
 			.patch(`/posts/${postId}/like`)
-			.set('token', `${token}`);
+			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
 		expect(res.body.data._id).toEqual(postId);
@@ -177,7 +177,7 @@ describe('post API Test', () => {
 		const postId = createdPosts[0];
 		const res = await request(app)
 			.patch(`/posts/${postId}/dislike`)
-			.set('token', `${token}`);
+			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
 		expect(res.body.data._id).toEqual(postId);
@@ -188,7 +188,7 @@ describe('post API Test', () => {
 		const postId = createdPosts[0];
 		const res = await request(app)
 			.patch(`/posts/${postId}/dislike`)
-			.set('token', `${token}`);
+			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
 		expect(res.body.data._id).toEqual(postId);
@@ -197,10 +197,10 @@ describe('post API Test', () => {
 
 	it ('should like a post and remove dislike if already disliked', async () => {
 		const postId = createdPosts[0];
-		await request(app).patch(`/posts/${postId}/dislike`).set('token', `${token}`); // dislike post
+		await request(app).patch(`/posts/${postId}/dislike`).set('Authorization', `Bearer ${token}`); // dislike post
 		const res = await request(app)
 			.patch(`/posts/${postId}/like`)
-			.set('token', `${token}`);
+			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
 		expect(res.body.data._id).toEqual(postId);
@@ -210,10 +210,10 @@ describe('post API Test', () => {
 
 	it ('should dislike a post and remove like if already liked', async () => {
 		const postId = createdPosts[0];
-		await request(app).patch(`/posts/${postId}/like`).set('token', `${token}`); // like post
+		await request(app).patch(`/posts/${postId}/like`).set('Authorization', `Bearer ${token}`); // like post
 		const res = await request(app)
 			.patch(`/posts/${postId}/dislike`)
-			.set('token', `${token}`);
+			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
 		expect(res.body.data._id).toEqual(postId);

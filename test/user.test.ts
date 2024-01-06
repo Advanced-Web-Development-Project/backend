@@ -55,28 +55,28 @@ describe('Users API test', () => {
 
 	it ('should update a user', async () => {
 		const updatedUserData = generator.generateValidUserData();
-		const res = await request(app).patch(`/users/${generatedUserData[0].username}`).set('token', `${tokens[0]}`).send(updatedUserData);
+		const res = await request(app).patch(`/users/${generatedUserData[0].username}`).set('Authorization', `Bearer ${tokens[0]}`).send(updatedUserData);
 		expect(res.statusCode).toEqual(200);
 		expect(res.body.data.username).toEqual(updatedUserData.username);
 
 		// return the user to its original state
-		await request(app).patch(`/users/${updatedUserData.username}`).set('token', `${tokens[0]}`).send(generatedUserData[0]);
+		await request(app).patch(`/users/${updatedUserData.username}`).set('Authorization', `Bearer ${tokens[0]}`).send(generatedUserData[0]);
 	});
 
 	it ('should not update a user if the user is not the same user requesting the update', async () => {
 		const updatedUserData = generator.generateValidUserData();
-		const res = await request(app).patch(`/users/${generatedUserData[0].username}`).set('token', `${tokens[1]}`).send(updatedUserData);
+		const res = await request(app).patch(`/users/${generatedUserData[0].username}`).set('Authorization', `Bearer ${tokens[1]}`).send(updatedUserData);
 		expect(res.statusCode).toEqual(403);
 	});
 
 	it ('should not update a user if the user does not exist', async () => {
 		const updatedUserData = generator.generateValidUserData();
-		const res = await request(app).patch(`/users/${generator.generateValidUserData().username}`).set('token', `${tokens[0]}`).send(updatedUserData);
+		const res = await request(app).patch(`/users/${generator.generateValidUserData().username}`).set('Authorization', `Bearer ${tokens[0]}`).send(updatedUserData);
 		expect(res.statusCode).toEqual(404);
 	});
 
 	it('should delete a user', async () => {
-		const res = await request(app).delete(`/users/${userIds[2]}`).set('token', `${tokens[2]}`);
+		const res = await request(app).delete(`/users/${userIds[2]}`).set('Authorization', `Bearer ${tokens[2]}`);
 		expect(res.statusCode).toEqual(200);
 
 		// check that the user has been deleted
@@ -91,7 +91,7 @@ describe('Users API test', () => {
 	});
 
 	it('should not delete a user if the user is not the same user requesting the delete', async () => {
-		const res = await request(app).delete(`/users/${userIds[0]}`).set('token', `${tokens[1]}`);
+		const res = await request(app).delete(`/users/${userIds[0]}`).set('Authorization', `Bearer ${tokens[1]}`);
 		expect(res.statusCode).toEqual(403);
 
 		// check that the user has not been deleted
@@ -106,7 +106,7 @@ describe('Users API test', () => {
 
 	it('should not delete a user if the user does not exist', async () => {
 		// use the previously deleted user's credentials and be unauthorized
-		const res = await request(app).delete(`/users/${userIds[2]}`).set('token', `${tokens[2]}`);
+		const res = await request(app).delete(`/users/${userIds[2]}`).set('Authorization', `Bearer ${tokens[2]}`);
 		expect(res.statusCode).toEqual(401);
 
 		// check that still there are only 2 users
