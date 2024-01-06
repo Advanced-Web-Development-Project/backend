@@ -49,7 +49,7 @@ const createPost = async (req: Request, res: Response) => {
     if (req.file) {
       postData.imagePath = req.file.path;
     }
-    const newPost = await postService.createPost(postData);
+    const newPost = await postService.createPost(req.user._id, postData);
     const response = new HttpResponse().withStatusCode(201).withData(newPost).build();
 
     return res.status(201).json(response);

@@ -36,7 +36,7 @@ const loginUser = async (userData) => {
 
 const createPost = async (token) => {
   try {
-    const postData = dataGenerator.generateValidPostData();
+    const postData = dataGenerator.generateValidPostDataWithoutImage();
     const response = await axios.post('http://localhost:8000/posts', postData,  {
 			headers: { 
 				'Content-Type': 'application/json',
@@ -100,6 +100,7 @@ const seedDb = async () => {
   await sleep(7000);
   console.log('Seeding database...');
 
+	console.log('Deleting all previous data from database...');
   await Comment.deleteMany({});
   await Post.deleteMany({});
   await User.deleteMany({});
@@ -107,8 +108,10 @@ const seedDb = async () => {
   const users = [];
   const posts = [];
 
+	// add console logs to see the progress of the seeding
   for (let i = 0; i < 5; i++) {
     const validUserData = dataGenerator.generateValidUserData();
+		console.log(`Registering user ${i + 1}...`);
     await registerUser(validUserData);
     const loginResponse = await loginUser({
       email: validUserData.email,
@@ -118,26 +121,29 @@ const seedDb = async () => {
     users.push({ ...loginResponse.userInfo, token: userToken });
 
     for (let j = 0; j < 2; j++) {
+			console.log(`Creating post ${j + 1} for user ${i + 1}...`);
       const post = await createPost(userToken);
       posts.push(post);
     }
   }
 
   for (const post of posts) {
+		console.log(`Creating comments for post ${post._id}...`);
     for (const user of users) {
       await createComment(user.token, post._id);
       await createComment(user.token, post._id);
 
-      // // Randomly decide to like or dislike
-      // if (Math.random() < 0.5) {
-      //   await likePost(user.token, post._id);
-      // } else {
-      //   await dislikePost(user.token, post._id);
-      // }
+      // Randomly decide to like or dislike
+      if (Math.random() < 0.5) {
+        await likePost(user.token, post._id);
+      } else {
+        await dislikePost(user.token, post._id);
+      }
     }
   }
 
 	console.log('Database seeded!');
+	process.exit();
 };
 
 seedDb();

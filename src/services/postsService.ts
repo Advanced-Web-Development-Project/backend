@@ -1,4 +1,5 @@
 import Post from '../models/Post'; 
+import User from '../models/User';
 
 const getAllPosts = async () => {
   try {
@@ -16,9 +17,13 @@ const getPost = async (postId) => {
   }
 };
 
-const createPost = async (post) => {
+const createPost = async (userId, postData) => {
   try {
-    return await Post.create(post);
+    const post = await Post.create(postData);
+		const user = await User.findById(userId);
+		user.posts.push(post._id);
+		await user.save();
+		return post;
   } catch (error) {
     throw new Error(`Error creating post: ${error.message}`);
   }
