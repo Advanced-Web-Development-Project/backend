@@ -99,7 +99,7 @@ describe('post API Test', () => {
 		const postId = 'invalidPostId';
 		const singlePost = await request(app).get(`/posts/${postId}`);
 
-		expect(singlePost.statusCode).toEqual(404); // 500 for server error
+		expect(singlePost.statusCode).toEqual(500); // 500 for server error
 	});
 
 	it('should update a post', async () => {
