@@ -25,13 +25,17 @@ const getPost = async (req: Request, res: Response) => {
   const postId = req.params.postId;
   try {
     const post = await postService.getPost(postId);
-    const response = new HttpResponse().withStatusCode(200).withData(post).withMessage('Post fetched successfully').build();
+		if (!post) {
+			const response = new HttpResponse().withStatusCode(404).addError('Post not found').build();
+			return res.status(404).json(response);
+		}
+    const response = new HttpResponse().withStatusCode(200).withMessage('Post fetched successfully').withData(post).build();
 
     return res.status(200).json(response);
   } catch (error) {
-    const response = new HttpResponse().withStatusCode(404).addError('Post not found').build();
+    const response = new HttpResponse().withStatusCode(500).addError("Internal Server Error").build();
 
-    return res.status(404).json(response);
+    return res.status(500).json(response);
   }
 };
 
