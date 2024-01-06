@@ -1,10 +1,12 @@
 import { join } from 'path';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger';
 import express, { Express } from 'express';
 import mongoose from 'mongoose';
 import passport from 'passport';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import routes from './routes/index';
+import dotenv from 'dotenv';
 dotenv.config();
 
 // We need to export the createApp function for testing purposes
@@ -33,6 +35,9 @@ const createApp = (): Express => {
 
 const startServer = () => {
   const app = createApp();
+
+	// swagger documentation setup
+	app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   // database connection
   const dbURI = process.env.MONGODB_URI;
