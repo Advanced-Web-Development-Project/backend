@@ -84,7 +84,7 @@ const deleteUser = async (req: Request, res: Response) => {
 	}
 	try {
 		await userService.deleteUserById(req.params.id);
-		const response = new HttpResponse().withStatusCode(200).addError("User has been deleted").build();
+		const response = new HttpResponse().withStatusCode(200).withMessage("User has been deleted").build();
 		return res.status(200).json(response);
 	} catch (error) {
 		const response = new HttpResponse().withStatusCode(500).addError(`Error while trying to delete user: ${error.message}`).build();
