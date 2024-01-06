@@ -15,7 +15,7 @@ const getAllPosts = async (req: Request, res: Response) => {
 
     res.status(200).json(response);
   } catch (error) {
-    const response = new HttpResponse().withStatusCode(500).withMessage('Server Error - get all posts').build();
+    const response = new HttpResponse().withStatusCode(500).addError('Server Error - get all posts').build();
 
     res.status(500).json(response);
   }
@@ -25,11 +25,11 @@ const getPost = async (req: Request, res: Response) => {
   const postId = req.params.postId;
   try {
     const post = await postService.getPost(postId);
-    const response = new HttpResponse().withStatusCode(200).withData(post).withMessage('Successfully fetched post').build();
+    const response = new HttpResponse().withStatusCode(200).withData(post).withMessage('Post fetched successfully').build();
 
     return res.status(200).json(response);
   } catch (error) {
-    const response = new HttpResponse().withStatusCode(404).withMessage('Post not found').build();
+    const response = new HttpResponse().withStatusCode(404).addError('Post not found').build();
 
     return res.status(404).json(response);
   }
@@ -50,7 +50,7 @@ const createPost = async (req: Request, res: Response) => {
       postData.imagePath = req.file.path;
     }
     const newPost = await postService.createPost(req.user._id, postData);
-    const response = new HttpResponse().withStatusCode(201).withData(newPost).build();
+    const response = new HttpResponse().withStatusCode(201).withMessage("Post created successfully").withData(newPost).build();
 
     return res.status(201).json(response);
   } catch (error) {
@@ -80,7 +80,7 @@ const updatePost = async (req: Request, res: Response) => {
       return res.status(404).json(response);
     }
 
-    const response = new HttpResponse().withStatusCode(200).withData(updatedPost).build();
+    const response = new HttpResponse().withStatusCode(200).withMessage("Post updated successfully").withData(updatedPost).build();
     return res.status(200).json(response);
   } catch (error) {
     const response = new HttpResponse().withStatusCode(500).addError(`Invalid update post`).build();
@@ -104,7 +104,7 @@ const deletePost = async (req: Request, res: Response) => {
     }
 
     const deletedPost = await postService.deletePost(postId);
-    const response = new HttpResponse().withStatusCode(200).withData(deletedPost).build();
+    const response = new HttpResponse().withStatusCode(200).withMessage("Post deleted successfully").withData(deletedPost).build();
     return res.status(200).json(response);
   } catch (error) {
     const response = new HttpResponse().withStatusCode(500).addError(`Invalid delete post`).build();
@@ -153,7 +153,7 @@ const updatePostReaction = async (req: Request, res: Response, action) => {
         }
 
         const updatedPost = await postService.updatePostFields(postId, update);
-        const response = new HttpResponse().withStatusCode(200).withData(updatedPost).build();
+        const response = new HttpResponse().withStatusCode(200).withMessage("Posts updated successfully").withData(updatedPost).build();
         return res.status(200).json(response);
     } catch (error) {
         const response = new HttpResponse().withStatusCode(500).addError('Error updating post').build();

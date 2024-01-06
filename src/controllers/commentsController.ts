@@ -29,7 +29,7 @@ const getComments = async (req: Request, res: Response) => {
 	const postId = req.params.postId;
 	try {
 		const comments = await commentService.getCommentsByPostId(postId);
-		const response = new HttpResponse().withStatusCode(200).withData(comments).build();
+		const response = new HttpResponse().withStatusCode(200).withMessage("Comments fetched successfully").withData(comments).build();
 		return res.status(200).json(response);
 	} catch (error) {
 		const response = new HttpResponse().withStatusCode(500).addError(`Error while trying to get the comments: ${error.message}`).build();
