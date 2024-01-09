@@ -43,7 +43,7 @@ const router = Router();
 *     summary: Create a new post
 *     tags: [Posts]
 *     security:
-*       - jwt: []
+*       - bearerAuth: []
 *     requestBody:
 *       required: true
 *       content:
@@ -103,7 +103,7 @@ router.get('/:postId', postController.getPost);
 *     summary: Update a post
 *     tags: [Posts]
 *     security:
-*       - jwt: []
+*       - bearerAuth: []
 *     parameters:
 *       - in: path
 *         name: postId
@@ -140,7 +140,7 @@ router.put('/:postId', requireJwtAuth, postController.updatePost);
 *     summary: Delete a post
 *     tags: [Posts]
 *     security:
-*       - jwt: []
+*       - bearerAuth: []
 *     parameters:
 *       - in: path
 *         name: postId
@@ -166,7 +166,7 @@ router.delete('/:postId', requireJwtAuth, postController.deletePost);
 *     summary: Like a post
 *     tags: [Posts]
 *     security:
-*       - jwt: []
+*       - bearerAuth: []
 *     parameters:
 *       - in: path
 *         name: postId
@@ -190,7 +190,7 @@ router.patch('/:postId/like', requireJwtAuth, postController.likePost);
 *     summary: Dislike a post
 *     tags: [Posts]
 *     security:
-*       - jwt: []
+*       - bearerAuth: []
 *     parameters:
 *       - in: path
 *         name: postId

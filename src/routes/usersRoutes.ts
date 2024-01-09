@@ -51,7 +51,7 @@ router.get('/:username', userController.getUserByUsername);
  *     summary: Update a user's information
  *     tags: [Users]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: username
@@ -97,7 +97,7 @@ router.patch('/:username', requireJwtAuth, [upload.single("avatar"), multerError
  *     summary: Delete a user by ID
  *     tags: [Users]
  *     security:
- *       - BearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

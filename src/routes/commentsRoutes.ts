@@ -33,7 +33,7 @@ const router = Router({ mergeParams: true }); // mergeParams: true allows us to 
 *     summary: Create a comment on a post
 *     tags: [Comments]
 *     security:
-*       - jwt: []
+*       - bearerAuth: []
 *     parameters:
 *       - in: path
 *         name: postId
@@ -83,7 +83,7 @@ router.get('/', commentController.getComments);
 *     summary: Update a comment on a post
 *     tags: [Comments]
 *     security:
-*       - jwt: []
+*       - bearerAuth: []
 *     parameters:
 *       - in: path
 *         name: postId
@@ -122,7 +122,7 @@ router.patch('/:commentId', requireJwtAuth, commentController.updateComment);
 *     summary: Delete a comment from a post
 *     tags: [Comments]
 *     security:
-*       - jwt: []
+*       - bearerAuth: []
 *     parameters:
 *       - in: path
 *         name: postId
