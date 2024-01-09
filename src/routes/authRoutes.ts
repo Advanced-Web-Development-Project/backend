@@ -67,8 +67,6 @@ const router = Router();
  *         refreshToken: "RnREB0f3f2pU3sQA9oWdbkfhETofE2m5"
  */
 
-
-
 /**
 * @swagger
 * /auth/login:
@@ -90,7 +88,6 @@ const router = Router();
 *         description: Internal Server Error
 */
 router.post('/login', authenticateRequest, authController.login);
-
 
 /**
  * @swagger
@@ -116,7 +113,6 @@ router.post('/login', authenticateRequest, authController.login);
  */
 router.post('/register', authController.register);
 
-
 /**
  * @swagger
  * /auth/logout:
@@ -130,7 +126,6 @@ router.post('/register', authController.register);
  *         description: Internal Server Error
  */
 router.post('/logout', authController.logout);
-
 
 /**
  * @swagger
@@ -147,7 +142,6 @@ router.post('/logout', authController.logout);
 router.get('/google', passport.authenticate('google', { 
 	scope: ['profile', 'email'] })
 );
-
 
 /**
  * @swagger
