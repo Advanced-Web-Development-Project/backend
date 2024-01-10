@@ -61,6 +61,8 @@ const deletePost = async (postId) => {
   }
 };
 
+
+
 export default {
   getAllPosts,
   getPost,

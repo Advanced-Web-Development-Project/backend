@@ -51,7 +51,7 @@ const updateUser = async (req: Request, res: Response) => {
 	}
 
 	if (req.file) {
-		updatedUserInfo.avatar = req.file.path;
+		updatedUserInfo.avatar = req.file.path.split('\\').slice(1).join('\\');
 	}
 
 	try {
