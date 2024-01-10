@@ -33,6 +33,7 @@ const router = Router();
  *           type: string
  *           format: binary
  *       example:
+ *         title: "Lorem Ipsum"
  *         content: "lorem ipsum dolor sit amet consectetur adipisicing elit"
  */
 
@@ -113,14 +114,9 @@ router.get('/:postId', postController.getPost);
 *     requestBody:
 *       required: true
 *       content:
-*         application/json:
+*         multipart/form-data:
 *           schema:
-*             type: object
-*             properties:
-*               title:
-*                 type: string
-*               content:
-*                 type: string
+*             $ref: '#/components/schemas/Post'
 *     responses:
 *       200:
 *         description: Post updated successfully
