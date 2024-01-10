@@ -56,7 +56,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     },
     avatar: {
       type: String,
-      default: '/images/default/default-avatar.png',
+      default: 'images/default/default-avatar.png',
     },
     provider: {
       type: String,

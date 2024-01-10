@@ -31,7 +31,7 @@ const postSchema = new Schema<IPost>(
     },
     imagePath: {
       type: String,
-      default: '/images/default/default-post-image.png',
+      default: 'images/default/default-post-image.png',
     },
     likes: {
       type: [Types.ObjectId],

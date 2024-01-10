@@ -40,7 +40,7 @@ const createPost = async (token) => {
     const response = await axios.post('http://localhost:8000/posts', postData,  {
 			headers: { 
 				'Content-Type': 'application/json',
-				'token': `${token}`
+				'Authorization': `Bearer ${token}`
 			},
 		});
     return response.data.data;
@@ -56,7 +56,7 @@ const createComment = async (token, postId) => {
       `http://localhost:8000/posts/${postId}/comments`, commentData, {
         headers: { 
 					'Content-Type': 'application/json',
-					'token': `${token}`
+					'Authorization': `Bearer ${token}`
 				},
       });
     return response.data.data;
@@ -71,7 +71,7 @@ const likePost = async (token, postId) => {
     const response = await axios.patch(`http://localhost:8000/posts/${postId}/like`, {}, {
 			headers: { 
 				'Content-Type': 'application/json',
-				'token': `${token}`
+				'Authorization': `Bearer ${token}`
 			}
     });
     return response.data;
@@ -86,7 +86,7 @@ const dislikePost = async (token, postId) => {
     const response = await axios.patch(`http://localhost:8000/posts/${postId}/dislike`, {}, {
 			headers: { 
 				'Content-Type': 'application/json',
-				'token': `${token}`
+				'Authorization': `Bearer ${token}`
 			}
     });
     return response.data;
