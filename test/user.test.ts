@@ -27,10 +27,6 @@ describe('Users API test', () => {
 		const res2 = await request(app).post('/auth/login').send(loginData[1]);
 		const res3 = await request(app).post('/auth/login').send(loginData[2]);
 
-		console.log(res1.body.data);
-		console.log(res2.body.data);
-		console.log(res3.body.data);
-
 		userIds.push(res1.body.data.userInfo.id);
 		userIds.push(res2.body.data.userInfo.id);
 		userIds.push(res3.body.data.userInfo.id);

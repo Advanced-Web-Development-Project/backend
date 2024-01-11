@@ -69,5 +69,17 @@ describe('local auth API Test', () => {
     expect(res.statusCode).toEqual(400); // 400 for bad request
   });
 
+	it('should refresh a user token', async () => {
+		const loginData = {
+			email: validUser.email,
+			password: validUser.password,
+		};
+		const res = await request(app).post('/auth/login').send(loginData);
+		const refreshToken = res.body.data.refreshToken;
 
+		const res2 = await request(app).post('/auth/refresh-token').send({refreshToken});
+		expect(res2.statusCode).toEqual(200); // 200 for successful refresh
+		expect(res2.body.data).toHaveProperty('accessToken'); // Check if accessToken is returned
+		expect(res2.body.data).toHaveProperty('refreshToken'); // Check if refreshToken is returned
+	});
 });
