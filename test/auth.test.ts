@@ -42,7 +42,8 @@ describe('local auth API Test', () => {
     };
     const res = await request(app).post('/auth/login').send(loginData);
     expect(res.statusCode).toEqual(200); // 200 for successful login
-    expect(res.body.data).toHaveProperty('token'); // Check if token is returned
+    expect(res.body.data).toHaveProperty('accessToken'); // Check if accessToken is returned
+		expect(res.body.data).toHaveProperty('refreshToken'); // Check if refreshToken is returned
   });
 
   it('should not log in a user with invalid credentials', async () => {

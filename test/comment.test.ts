@@ -30,8 +30,8 @@ describe('Comments API test', () => {
 		userIds.push(loginResponse1.body.data.userInfo.id);
 		userIds.push(loginResponse2.body.data.userInfo.id);
 
-		tokens.push(loginResponse1.body.data.token);
-		tokens.push(loginResponse2.body.data.token);
+		tokens.push(loginResponse1.body.data.accessToken);
+		tokens.push(loginResponse2.body.data.accessToken);
 
 		const postResponse1 = await request(app).post('/posts').set('Authorization', `Bearer ${tokens[0]}`).send(generatedPostData[0]);
 		const postResponse2 = await request(app).post('/posts').set('Authorization', `Bearer ${tokens[1]}`).send(generatedPostData[1]);

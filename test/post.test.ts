@@ -14,7 +14,7 @@ describe('post API Test', () => {
       password: validUser.password,
     };
     const res = await request(app).post('/auth/login').send(loginData);
-    token = res.body.data.token;
+    token = res.body.data.accessToken;
   });
 
   it('should create a new post with image', async () => {
@@ -38,7 +38,7 @@ describe('post API Test', () => {
 
     expect(res.statusCode).toEqual(201); // 201 for successful creation
     expect(res.body.data.imagePath).toEqual(
-      'public/images/default/default-post-image.png'
+      'images/default/default-post-image.png'
     );
 		createdPosts.push(res.body.data._id);
   });
