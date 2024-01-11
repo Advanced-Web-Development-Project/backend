@@ -1,4 +1,5 @@
 import User, { IUser } from '../models/User';
+import jwt from 'jsonwebtoken';
 
 const createUser = async (userData: IUser) => {
   const user = await new User(userData).save();
@@ -57,6 +58,12 @@ const updateUser = async (username: string, updatedUserInfo: IUser) => {
 	return await user.save();
 };
 
+const getUserByRefreshToken = async (refreshToken: string) => {
+	const decoded = jwt.verify(refreshToken, process.env.AUTH_REFRESH_TOKEN_SECRET) as jwt.JwtPayload;
+	const user = await User.findById(decoded.id);
+	return user;
+};
+
 export default {
   createUser,
   getUserById,
@@ -65,4 +72,5 @@ export default {
   getAllUsers,
 	deleteUserById,
 	updateUser,
+	getUserByRefreshToken,
 };

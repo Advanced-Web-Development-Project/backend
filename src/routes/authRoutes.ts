@@ -3,6 +3,7 @@ import authenticateRequest from '../middlewares/requireLocalAuth';
 import authController from '../controllers/authController';
 import passport from 'passport';
 
+
 const router = Router();
 
 /**
@@ -126,6 +127,34 @@ router.post('/register', authController.register);
  *         description: Internal Server Error
  */
 router.post('/logout', authController.logout);
+
+/**
+ * @swagger
+ * /auth/refresh-token:
+ *   post:
+ *     summary: Refresh access token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *             example:
+ *               refreshToken: "RnREB0f3f2pU3sQA9oWdbkfhETofE2m5"
+ *     responses:
+ *       200:
+ *         description: Successful refresh
+ *       400:
+ *         description: Bad Request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/refresh-token', authController.refreshToken);
 
 /**
  * @swagger

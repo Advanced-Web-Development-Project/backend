@@ -16,11 +16,13 @@ export interface IUser {
   comments?: Types.Array<Types.ObjectId>;
   createdAt?: Date;
   updatedAt?: Date;
+  refreshToken?: string;
 }
 
 export interface IUserMethods {
   toJSON(): object;
   generateJWT(): string;
+  generateRefreshToken(): string;
   comparePassword(
     candidatePassword: string,
     callback: (err: Error | null, isMatch?: boolean) => void
@@ -75,6 +77,10 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       type: [Types.ObjectId],
       default: [],
     },
+    refreshToken: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );
@@ -97,14 +103,29 @@ userSchema.methods.toJSON = function (): object {
 userSchema.methods.generateJWT = function (): string {
   const token = jwt.sign(
     {
-      expiresIn: '12h',
       id: this._id,
       provider: this.provider,
       email: this.email,
     },
-    process.env.AUTH_ACCESS_TOKEN_SECRET
+    process.env.AUTH_ACCESS_TOKEN_SECRET,
+    { expiresIn: process.env.AUTH_ACCESS_TOKEN_EXPIRATION_TIME }
   );
   return token;
+};
+
+userSchema.methods.generateRefreshToken = function (): string {
+  const refreshToken = jwt.sign(
+    {
+      id: this._id,
+      provider: this.provider,
+      email: this.email,
+    },
+    process.env.AUTH_REFRESH_TOKEN_SECRET,
+		{ expiresIn: process.env.AUTH_REFRESH_TOKEN_EXPIRATION_TIME }
+  );
+  this.refreshToken = refreshToken;
+  this.save();
+  return refreshToken;
 };
 
 // use a function before doc saved to db
