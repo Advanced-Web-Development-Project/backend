@@ -80,7 +80,6 @@ const logout = (req: Request, res: Response) => {
 const refreshToken = async (req: Request, res: Response) => {
 	// verify that the refresh token exists
 	const refreshToken = req.body.refreshToken;
-	console.log(req.body);
 	if (!refreshToken) {
 		const response = new HttpResponse()
 			.withStatusCode(400)
