@@ -52,7 +52,8 @@ const createPost = async (userId, postData) => {
 		const user = await User.findById(userId);
 		user.posts.push(post._id);
 		await user.save();
-		return post;
+		const populatedPost = await Post.findById(post._id).populate('user');
+		return formatPost(populatedPost);
   } catch (error) {
     throw new Error(`Error creating post: ${error.message}`);
   }
@@ -94,8 +95,20 @@ const deletePost = async (postId) => {
       throw new Error('Post not found');
     }
 
-    // Delete all comments associated with the post
-    await Comment.deleteMany({ _id: { $in: post.comments } });
+    // Delete all comments associated with the post 
+		const commentIds = post.comments;
+		Comment.deleteMany({ _id: { $in: commentIds } });
+
+		// Remove comment references from all users' comments array
+		await User.updateMany(
+			{ comments: { $in: post.comments } },
+			{ $pullAll: { comments: post.comments } }
+		);
+
+		// Pull the post from the user's posts array
+		const user = await User.findById(post.user);
+		user.posts.pull(postId);
+		await user.save();
 
     // Delete the post itself
     await Post.findByIdAndDelete(postId);
