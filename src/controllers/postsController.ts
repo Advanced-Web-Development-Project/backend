@@ -1,24 +1,12 @@
 import postService from '../services/postsService';
-import mongoose from 'mongoose';
 import { Request, Response } from 'express';
-import { postSchema, validateSchema } from '../utils/validators';
+import { postSchema, updatePostSchema, validateSchema } from '../utils/validators';
 import HttpResponse from '../utils/httpResponse';
 
 // This file handles the logic for handling the requests and sending back the responses.
 // The database interaction is handled by the service file.
 
 const getAllPosts = async (req: Request, res: Response) => {
-  // try {
-  //   const posts = await postService.getAllPosts();
-
-  //   const response = new HttpResponse().withStatusCode(200).withData(posts).withMessage('Successfully fetched all posts').build();
-
-  //   res.status(200).json(response);
-  // } catch (error) {
-  //   const response = new HttpResponse().withStatusCode(500).addError('Server Error - get all posts').build();
-
-  //   res.status(500).json(response);
-  // }
 	try {
 		const posts = await postService.getPostsByCategory('general');
 
@@ -47,10 +35,10 @@ const getPostsByCategory = async (req: Request, res: Response) => {
 	}
 };
 
-const getPost = async (req: Request, res: Response) => {
+const getPostById = async (req: Request, res: Response) => {
   const postId = req.params.postId;
   try {
-    const post = await postService.getPost(postId);
+    const post = await postService.getPostById(postId);
 		if (!post) {
 			const response = new HttpResponse().withStatusCode(404).addError('Post not found').build();
 			return res.status(404).json(response);
@@ -90,51 +78,55 @@ const createPost = async (req: Request, res: Response) => {
 };
 
 const updatePost = async (req: Request, res: Response) => {
-  try {
-    const postId = req.params.postId;
-    const post = req.body;
+  const postId = req.params.postId;
+  const updatedPostFields = req.body;
+	
+	// make sure that the post exists and that it belongs to the user
+	const post = await postService.getPostById(postId);
+	if (!post) {
+		const response = new HttpResponse().withStatusCode(404).addError('Post not found').build();
+		return res.status(404).json(response);
+	}
+	if (post.username !== req.user.username) {
+		const response = new HttpResponse().withStatusCode(403).addError('You are not authorized to update this post').build();
+		return res.status(403).json(response);
+	}
 
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(400).json({ error: 'Invalid postId' });
-    }
-
-    const errorMessages = validateSchema(postSchema, post);
-    if (errorMessages) {
-      const response = new HttpResponse().withStatusCode(422).addError(errorMessages).build();
-      return res.status(422).json(response);
-    }
-
-    const updatedPost = await postService.updatePost(postId, post);
-    if (!updatedPost) {
-      const response = new HttpResponse().withStatusCode(404).addError('Post not found').build();
-      return res.status(404).json(response);
-    }
-
-    const response = new HttpResponse().withStatusCode(200).withMessage("Post updated successfully").withData(updatedPost).build();
-    return res.status(200).json(response);
-  } catch (error) {
-    const response = new HttpResponse().withStatusCode(500).addError(`Invalid update post`).build();
-    return res.status(500).json(response);
+	// Validate request body
+  const errorMessages = validateSchema(updatePostSchema, updatedPostFields);
+  if (errorMessages) {
+    const response = new HttpResponse().withStatusCode(400).addError(errorMessages).build();
+    return res.status(400).json(response);
   }
+
+	try {
+		const updatedPost = await postService.updatePost(postId, updatedPostFields);
+		const response = new HttpResponse().withStatusCode(200).withMessage("Post updated successfully").withData(updatedPost).build();
+		return res.status(200).json(response);
+	} catch (error) {
+		const response = new HttpResponse().withStatusCode(500).addError(`Invalid update post`).build();
+		return res.status(500).json(response);
+	}
 };
 
 const deletePost = async (req: Request, res: Response) => {
-  try {
-    const postId = req.params.postId;
+	const postId = req.params.postId;
 
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      const response = new HttpResponse().withStatusCode(400).addError(`Invalid post id`).build();
-      return res.status(400).json(response);
-    }
+	// make sure that the post exists 
+	const post = await postService.getPostById(postId);
+	if (!post) {
+			const response = new HttpResponse().withStatusCode(404).addError('Post not found').build();
+		return res.status(404).json(response);
+	}
+	// make sure that the post belongs to the user
+	if (post.username !== req.user.username) {
+			const response = new HttpResponse().withStatusCode(403).addError('You are not authorized to update this post').build();
+		return res.status(403).json(response);
+	}
 
-    const postInDb = await postService.getPost(postId);
-    if (!postInDb) {
-      const response = new HttpResponse().withStatusCode(400).addError('Post not found').build();
-      return res.status(404).json(response);
-    }
-
-    const deletedPost = await postService.deletePost(postId);
-    const response = new HttpResponse().withStatusCode(200).withMessage("Post deleted successfully").withData(deletedPost).build();
+	try {
+    await postService.deletePost(postId);
+    const response = new HttpResponse().withStatusCode(200).withMessage("Post deleted successfully").build();
     return res.status(200).json(response);
   } catch (error) {
     const response = new HttpResponse().withStatusCode(500).addError(`Invalid delete post`).build();
@@ -154,7 +146,7 @@ const updatePostReaction = async (req: Request, res: Response, action) => {
     const postId = req.params.postId;
     const userId = req.user._id;
     try {
-        const post = await postService.getPost(postId);
+        const post = await postService.getPostById(postId);
         if (!post) {
             const response = new HttpResponse().withStatusCode(404).addError('Post not found').build();
             return res.status(404).json(response);
@@ -194,7 +186,7 @@ const updatePostReaction = async (req: Request, res: Response, action) => {
 export default {
   getAllPosts,
 	getPostsByCategory,
-  getPost,
+  getPostById,
   createPost,
   updatePost,
   deletePost,

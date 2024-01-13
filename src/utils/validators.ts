@@ -19,6 +19,12 @@ const postSchema = Joi.object().keys({
 	category: Joi.string().trim(),
 });
 
+const updatePostSchema = Joi.object().keys({
+	title: Joi.string().trim(),
+	content: Joi.string().trim(),
+	imagePath: Joi.string().trim(),
+});
+
 const commentSchema = Joi.object().keys({
 	content: Joi.string().trim().required(),
 });
@@ -46,6 +52,7 @@ export {
   loginSchema,
   registerSchema,
   postSchema,
+	updatePostSchema,
 	commentSchema,
 	updateUserSchema,
   validateSchema

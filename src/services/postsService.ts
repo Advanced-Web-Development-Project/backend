@@ -1,39 +1,46 @@
 import Post, { IPost } from '../models/Post'; 
 import User, { IUser } from '../models/User';
+import Comment from '../models/Comment';
+import mongoose from 'mongoose';
 
 const getAllPosts = async () => {
 	return getPostsByCategory('general');
 };
 
+const formatPost = (populatedPost: IPost) => {
+	const user = populatedPost.user as IUser;
+	return {
+			postId: populatedPost._id,
+			username: user.username,
+			title: populatedPost.title,
+			content: populatedPost.content,
+			imagePath: populatedPost.imagePath,
+			createdAt: populatedPost.createdAt,
+			updatedAt: populatedPost.updatedAt,
+			likes: populatedPost.likes,
+			dislikes: populatedPost.dislikes,
+			comments: populatedPost.comments,
+	};
+};
 
-const getPostsByCategory = async (category) => {
+const getPostsByCategory = async (category: string) => {
 	try {
 		const populatedPosts = await Post.find({ category }).populate('user');
-
-		const posts = populatedPosts.map((post: IPost) => {
-			const user = post.user as IUser;
-			return {
-				postId: post._id,
-				username: user.username,
-				title: post.title,
-				content: post.content,
-				createdAt: post.createdAt,
-				updatedAt: post.updatedAt,
-				likes: post.likes,
-				dislikes: post.dislikes,
-				comments: post.comments,
-			};
-		});
-
+		const posts = populatedPosts.map((post: IPost) => formatPost(post));
     return posts;
   } catch (error) {
     throw new Error(`Error fetching posts: ${error.message}`);
   }
 };
 
-const getPost = async (postId) => {
+const getPostById = async (postId) => {
+	if (!mongoose.Types.ObjectId.isValid(postId)) {
+		return null; // invalid post ids will not be found
+	}
   try {
-    return await Post.findById(postId).populate('user');
+		const populatedPost = await Post.findById(postId).populate('user');
+		const post = formatPost(populatedPost);
+    return post;
   } catch (error) {
     throw new Error(`Error fetching single post: ${error.message}`);
   }
@@ -53,7 +60,8 @@ const createPost = async (userId, postData) => {
 
 const updatePost = async (postId, post) => {
   try {
-    return await Post.findByIdAndUpdate(postId, post, { new: true });
+		const populatedPost = await Post.findByIdAndUpdate(postId, post, { new: true });
+		return formatPost(populatedPost);
   } catch (error) {
     throw new Error(`Error updating post: ${error.message}`);
   }
@@ -62,13 +70,13 @@ const updatePost = async (postId, post) => {
 const updatePostFields = async (postId, fieldsToUpdate) => {
   try {
     // Check if fieldsToUpdate contains $push or $pull keys (This is for the likes / dislikes arrays)
+		let populatedPost: IPost;
     if ('$push' in fieldsToUpdate || '$pull' in fieldsToUpdate) {
-      // Directly use the fieldsToUpdate for $push or $pull operations
-      return await Post.findByIdAndUpdate(postId, fieldsToUpdate, { new: true });
+      populatedPost = await Post.findByIdAndUpdate(postId, fieldsToUpdate, { new: true }).populate('user');
     } else {
-      // Use $set for other types of updates
-      return await Post.findByIdAndUpdate(postId, { $set: fieldsToUpdate }, { new: true });
-    }
+      populatedPost = await Post.findByIdAndUpdate(postId, { $set: fieldsToUpdate }, { new: true });
+		}
+		return formatPost(populatedPost);
   } catch (error) {
     throw new Error(`Error updating post fields: ${error.message}`);
   }
@@ -76,8 +84,23 @@ const updatePostFields = async (postId, fieldsToUpdate) => {
 
 
 const deletePost = async (postId) => {
+  if (!mongoose.Types.ObjectId.isValid(postId)) {
+    return null; // invalid post ids will not be found
+  }
   try {
-    return await Post.findByIdAndDelete(postId);
+    // Find the post with the given ID
+    const post = await Post.findById(postId);
+    if (!post) {
+      throw new Error('Post not found');
+    }
+
+    // Delete all comments associated with the post
+    await Comment.deleteMany({ _id: { $in: post.comments } });
+
+    // Delete the post itself
+    await Post.findByIdAndDelete(postId);
+
+    return { message: 'Post and associated comments deleted successfully' };
   } catch (error) {
     throw new Error(`Error deleting post: ${error.message}`);
   }
@@ -88,7 +111,7 @@ const deletePost = async (postId) => {
 export default {
 	getAllPosts,
 	getPostsByCategory,
-  getPost,
+  getPostById,
   createPost,
   updatePost,
   updatePostFields,

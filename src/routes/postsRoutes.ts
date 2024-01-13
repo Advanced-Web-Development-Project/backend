@@ -97,7 +97,7 @@ router.get('/category/:category', postController.getPostsByCategory);
 *       500:
 *         description: Internal Server Error
 */
-router.get('/:postId', postController.getPost);
+router.get('/:postId', postController.getPostById);
 
 /**
 * @swagger

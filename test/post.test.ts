@@ -92,14 +92,14 @@ describe('post API Test', () => {
 		const singlePost = await request(app).get(`/posts/${postId}`);
 
 		expect(singlePost.statusCode).toEqual(200); // 200 for successful request
-		expect(singlePost.body.data._id).toEqual(postId);
+		expect(singlePost.body.data.postId).toEqual(postId);
 	});
 
 	it('should not get a single post with invalid postId', async () => {
 		const postId = 'invalidPostId';
 		const singlePost = await request(app).get(`/posts/${postId}`);
 
-		expect(singlePost.statusCode).toEqual(500); // 500 for server error
+		expect(singlePost.statusCode).toEqual(404); 
 	});
 
 	it('should update a post', async () => {
@@ -111,7 +111,7 @@ describe('post API Test', () => {
 			.send(postData);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
-		expect(res.body.data._id).toEqual(postId);
+		expect(res.body.data.postId).toEqual(postId);
 		expect(res.body.data.title).toEqual(postData.title);
 		expect(res.body.data.content).toEqual(postData.content);
 	});
@@ -124,7 +124,7 @@ describe('post API Test', () => {
 			.set('Authorization', `Bearer ${token}`)
 			.send(postData);
 
-		expect(res.statusCode).toEqual(400); // 400 for invalid data
+		expect(res.statusCode).toEqual(404); // 404 for not found
 	});
 
 	it('should delete a post', async () => {
@@ -134,7 +134,6 @@ describe('post API Test', () => {
 			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
-		expect(res.body.data._id).toEqual(postId);
 		const numberOfPosts = await request(app).get('/posts');
 		expect(numberOfPosts.body.data.length).toEqual(1); // there should be 1 post from previous tests
 		createdPosts.pop(); // remove deleted post from array
@@ -146,7 +145,7 @@ describe('post API Test', () => {
 			.delete(`/posts/${postId}`)
 			.set('Authorization', `Bearer ${token}`);
 
-		expect(res.statusCode).toEqual(400); // 400 for invalid data
+		expect(res.statusCode).toEqual(404); // 404 for not found
 		const numberOfPosts = await request(app).get('/posts');
 		expect(numberOfPosts.body.data.length).toEqual(1); // there should be 1 post from previous tests
 	});
@@ -158,7 +157,6 @@ describe('post API Test', () => {
 			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
-		expect(res.body.data._id).toEqual(postId);
 		expect(res.body.data.likes.length).toEqual(1);
 	});
 
@@ -169,7 +167,6 @@ describe('post API Test', () => {
 			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
-		expect(res.body.data._id).toEqual(postId);
 		expect(res.body.data.likes.length).toEqual(0);
 	});
 
@@ -180,7 +177,7 @@ describe('post API Test', () => {
 			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
-		expect(res.body.data._id).toEqual(postId);
+		expect(res.body.data.postId).toEqual(postId);
 		expect(res.body.data.dislikes.length).toEqual(1);
 	});
 
@@ -191,7 +188,7 @@ describe('post API Test', () => {
 			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
-		expect(res.body.data._id).toEqual(postId);
+		expect(res.body.data.postId).toEqual(postId);
 		expect(res.body.data.dislikes.length).toEqual(0);
 	});
 
@@ -203,7 +200,7 @@ describe('post API Test', () => {
 			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
-		expect(res.body.data._id).toEqual(postId);
+		expect(res.body.data.postId).toEqual(postId);
 		expect(res.body.data.likes.length).toEqual(1);
 		expect(res.body.data.dislikes.length).toEqual(0);
 	});
@@ -216,7 +213,7 @@ describe('post API Test', () => {
 			.set('Authorization', `Bearer ${token}`);
 
 		expect(res.statusCode).toEqual(200); // 200 for successful request
-		expect(res.body.data._id).toEqual(postId);
+		expect(res.body.data.postId).toEqual(postId);
 		expect(res.body.data.likes.length).toEqual(0);
 		expect(res.body.data.dislikes.length).toEqual(1);
 	});
