@@ -113,7 +113,7 @@ describe('Comments API test', () => {
 		expect(res.statusCode).toEqual(201);
 
 		// update the comment
-		const commentId = res.body.data._id;
+		const commentId = res.body.data.commentId;
 		const updatedCommentData = generator.generateValidCommentData();
 		const res2 = await request(app).patch(`/posts/${postIds[1]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}`).send(updatedCommentData);
 
@@ -136,7 +136,7 @@ describe('Comments API test', () => {
 		expect(res.statusCode).toEqual(201);
 
 		// update the comment with the other user's token
-		const commentId = res.body.data._id;
+		const commentId = res.body.data.commentId;
 		const updatedCommentData = generator.generateValidCommentData();
 		const res2 = await request(app).patch(`/posts/${postIds[1]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[1]}`).send(updatedCommentData);
 		expect(res2.statusCode).toEqual(403);
@@ -155,7 +155,7 @@ describe('Comments API test', () => {
 		expect(res.statusCode).toEqual(201);
 
 		// delete the comment
-		const commentId = res.body.data._id;
+		const commentId = res.body.data.commentId;
 		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}`);
 		expect(res2.statusCode).toEqual(200);
 
@@ -175,7 +175,7 @@ describe('Comments API test', () => {
 		expect(res.statusCode).toEqual(201);
 
 		// delete the comment from another post
-		const commentId = res.body.data._id;
+		const commentId = res.body.data.commentId;
 		const res2 = await request(app).delete(`/posts/${postIds[1]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}`);
 		expect(res2.statusCode).toEqual(404);
 	});
@@ -192,7 +192,7 @@ describe('Comments API test', () => {
 		expect(res.statusCode).toEqual(201);
 
 		// try to delete the comment, but with an invalid post ID
-		const commentId = res.body.data._id;
+		const commentId = res.body.data.commentId;
 		const res2 = await request(app).delete(`/posts/123/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}`);
 		expect(res2.statusCode).toEqual(400);
 	});
@@ -209,7 +209,7 @@ describe('Comments API test', () => {
 		expect(res.statusCode).toEqual(201);
 
 		// try to delete the comment, but with an invalid token
-		const commentId = res.body.data._id;
+		const commentId = res.body.data.commentId;
 		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[0]}123`);
 		expect(res2.statusCode).toEqual(401);
 	});
@@ -221,7 +221,7 @@ describe('Comments API test', () => {
 		expect(res.statusCode).toEqual(201);
 
 		// try to delete the comment, but with another user's token
-		const commentId = res.body.data._id;
+		const commentId = res.body.data.commentId;
 		const res2 = await request(app).delete(`/posts/${postIds[0]}/comments/${commentId}`).set('Authorization', `Bearer ${tokens[1]}`);
 		expect(res2.statusCode).toEqual(403);
 	});

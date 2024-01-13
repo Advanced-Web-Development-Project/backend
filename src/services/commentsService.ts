@@ -20,7 +20,9 @@ const createComment = async (userId, postId, content: string) => {
   user.comments.push(comment._id);
   await user.save();
 
-  return comment;
+	await comment.populate('user');
+
+  return commentToCommentDTO(comment);
 };
 
 const getCommentsByPostId = async (postId) => {
@@ -33,63 +35,73 @@ const getCommentsByPostId = async (postId) => {
     path: 'user',
   });
   // map the populated comments to a json object with the author's username, the comment's content, and the creation / modification dates
-  const comments = populatedComments.map((comment: IComment) => {
-    const user = comment.user as IUser;
-    return {
-			commentId: comment._id,
-      username: user.username,
-      content: comment.content,
-      createdAt: comment.createdAt,
-			updatedAt: comment.updatedAt,
-    };
-  });
+  const comments = populatedComments.map((comment: IComment) =>
+	commentToCommentDTO(comment)
+  );
 
   return comments;
 };
 
+const commentToCommentDTO = (comment: IComment) => {
+  const user = comment.user as IUser;
+  return {
+    commentId: comment._id,
+    username: user.username,
+    content: comment.content,
+    createdAt: comment.createdAt,
+    updatedAt: comment.updatedAt,
+  };
+};
+
 const getCommentById = async (commentId) => {
-	if (!mongoose.Types.ObjectId.isValid(commentId)) {
-		return null; // invalid comment ids will not be found
-	}
-	try {
-		return await Comment.findById(commentId);
-	} catch (error) {
-		throw new Error(`Error fetching comment: ${error.message}`);
-	}
+  if (!mongoose.Types.ObjectId.isValid(commentId)) {
+    return null; // invalid comment ids will not be found
+  }
+  try {
+    return await Comment.findById(commentId);
+  } catch (error) {
+    throw new Error(`Error fetching comment: ${error.message}`);
+  }
 };
 
 const updateCommentById = async (commentId, content) => {
-	try {
-		return Comment.findOneAndUpdate({ _id: commentId }, { content }, { new: true });
-	} catch (error) {
-		throw new Error(`Error updating comment: ${error.message}`);
-	}
+  try {
+		
+    const comment = await Comment.findOneAndUpdate(
+      { _id: commentId },
+      { content },
+      { new: true }
+    );
+		await comment.populate('user');
+		return commentToCommentDTO(comment);
+  } catch (error) {
+    throw new Error(`Error updating comment: ${error.message}`);
+  }
 };
 
 const deleteCommentById = async (userId, postId, commentId) => {
-	try {
-			// Delete the comment
-			await Comment.findByIdAndDelete(commentId);
-			
-			// Remove the comment from the post
-			const post = await Post.findById(postId);
-			post.comments.pull(commentId);
-			await post.save();
+  try {
+    // Delete the comment
+    await Comment.findByIdAndDelete(commentId);
 
-			// Remove the comment from the user
-			const user = await User.findById(userId);
-			user.comments.pull(commentId);
-			await user.save();
-	} catch (err) {
-			throw new Error(`Error deleting comment: ${err.message}`);
-	}
+    // Remove the comment from the post
+    const post = await Post.findById(postId);
+    post.comments.pull(commentId);
+    await post.save();
+
+    // Remove the comment from the user
+    const user = await User.findById(userId);
+    user.comments.pull(commentId);
+    await user.save();
+  } catch (err) {
+    throw new Error(`Error deleting comment: ${err.message}`);
+  }
 };
 
-
 export default {
-	createComment,
-	getCommentsByPostId,
-	getCommentById,
-	updateCommentById,
-	deleteCommentById,
+  createComment,
+  getCommentsByPostId,
+  getCommentById,
+  updateCommentById,
+  deleteCommentById,
 };
