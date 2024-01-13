@@ -4,6 +4,7 @@ import { startServer } from '../../src/app';
 import User from '../models/User';
 import Post from '../models/Post';
 import Comment from '../models/Comment';
+import newsGenerator from './newsGenerator';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -116,6 +117,45 @@ const dislikePost = async (token, postId) => {
   }
 };
 
+const createTest123user = async () => {
+  const userData = {
+    email: 'test123@gmail.com',
+    password: 'test123',
+    username: 'test123',
+    name: 'test123',
+  };
+  await registerUser(userData);
+  console.log('Created test123 user');
+};
+
+const createAPIusers = async () => {
+  const sportsNewsUser = {
+    email: 'sportsNews@gmail.com',
+    password: 'sportsNews',
+    username: 'sportsNews',
+    name: 'sportsNews',
+  };
+	const technologyNewsUser = {
+    email: 'technologyNews@gmail.com',
+    password: 'technologyNews',
+    username: 'technologyNews',
+    name: 'technologyNews',
+  };
+	const scienceNewsUser = {
+    email: 'scienceNews@gmail.com',
+    password: 'scienceNews',
+    username: 'scienceNews',
+    name: 'scienceNews',
+  };
+
+  await registerUser(sportsNewsUser);
+  console.log('Created sportsNews user');
+  await registerUser(technologyNewsUser);
+  console.log('Created technologyNews user');
+  await registerUser(scienceNewsUser);
+  console.log('Created scienceNews user');
+};
+
 const seedDb = async () => {
   startServer();
   await sleep(7000);
@@ -162,6 +202,11 @@ const seedDb = async () => {
       }
     }
   }
+
+  await createTest123user();
+  await createAPIusers();
+
+	await newsGenerator.run();
 
   console.log('Database seeded!');
   process.exit();

@@ -10,6 +10,7 @@ export interface IPost {
   likes: Types.Array<Types.ObjectId>;
   dislikes: Types.Array<Types.ObjectId>;
   comments: Types.Array<Types.ObjectId | IComment>;
+	category: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,6 +47,10 @@ const postSchema = new Schema<IPost>(
       ref: 'Comment',
       default: [],
     },
+		category: {
+			type: String,
+			default: 'general',
+		}
   },
   {
     timestamps: true,

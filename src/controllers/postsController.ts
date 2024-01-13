@@ -8,17 +8,43 @@ import HttpResponse from '../utils/httpResponse';
 // The database interaction is handled by the service file.
 
 const getAllPosts = async (req: Request, res: Response) => {
-  try {
-    const posts = await postService.getAllPosts();
+  // try {
+  //   const posts = await postService.getAllPosts();
 
-    const response = new HttpResponse().withStatusCode(200).withData(posts).withMessage('Successfully fetched all posts').build();
+  //   const response = new HttpResponse().withStatusCode(200).withData(posts).withMessage('Successfully fetched all posts').build();
 
-    res.status(200).json(response);
-  } catch (error) {
-    const response = new HttpResponse().withStatusCode(500).addError('Server Error - get all posts').build();
+  //   res.status(200).json(response);
+  // } catch (error) {
+  //   const response = new HttpResponse().withStatusCode(500).addError('Server Error - get all posts').build();
 
-    res.status(500).json(response);
-  }
+  //   res.status(500).json(response);
+  // }
+	try {
+		const posts = await postService.getPostsByCategory('general');
+
+		const response = new HttpResponse().withStatusCode(200).withData(posts).withMessage('Successfully fetched posts').build();
+
+		res.status(200).json(response);
+	} catch (error) {
+		const response = new HttpResponse().withStatusCode(500).addError('Server Error - get all posts').build();
+
+		res.status(500).json(response);
+	}
+};
+
+const getPostsByCategory = async (req: Request, res: Response) => {
+	try {
+		const category = req.params.category;
+		const posts = await postService.getPostsByCategory(category);
+
+		const response = new HttpResponse().withStatusCode(200).withData(posts).withMessage('Successfully fetched posts').build();
+
+		res.status(200).json(response);
+	} catch (error) {
+		const response = new HttpResponse().withStatusCode(500).addError('Server Error - get all posts').build();
+
+		res.status(500).json(response);
+	}
 };
 
 const getPost = async (req: Request, res: Response) => {
@@ -167,6 +193,7 @@ const updatePostReaction = async (req: Request, res: Response, action) => {
 
 export default {
   getAllPosts,
+	getPostsByCategory,
   getPost,
   createPost,
   updatePost,

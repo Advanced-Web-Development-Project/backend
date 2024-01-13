@@ -16,6 +16,7 @@ const postSchema = Joi.object().keys({
   title: Joi.string().trim().required(),
   content: Joi.string().trim().required(),
   imagePath: Joi.string().trim(),
+	category: Joi.string().trim(),
 });
 
 const commentSchema = Joi.object().keys({

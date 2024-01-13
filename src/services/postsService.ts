@@ -9,6 +9,14 @@ const getAllPosts = async () => {
   }
 };
 
+const getPostsByCategory = async (category) => {
+	try {
+		return await Post.find({ category }).populate('user');
+	} catch (error) {
+		throw new Error(`Error fetching posts by category: ${error.message}`);
+	}
+};
+
 const getPost = async (postId) => {
   try {
     return await Post.findById(postId).populate('user');
@@ -65,6 +73,7 @@ const deletePost = async (postId) => {
 
 export default {
   getAllPosts,
+	getPostsByCategory,
   getPost,
   createPost,
   updatePost,

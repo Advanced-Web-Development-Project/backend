@@ -75,6 +75,8 @@ router.post('/', requireJwtAuth, [upload.single("image"), multerErrorHandler], p
 */
 router.get('/', postController.getAllPosts);
 
+router.get('/category/:category', postController.getPostsByCategory);
+
 /**
 * @swagger
 * /posts/{postId}:
