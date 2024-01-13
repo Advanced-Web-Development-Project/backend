@@ -1,20 +1,34 @@
-import Post from '../models/Post'; 
-import User from '../models/User';
+import Post, { IPost } from '../models/Post'; 
+import User, { IUser } from '../models/User';
 
 const getAllPosts = async () => {
-  try {
-    return await Post.find().populate('user'); // return all posts
-  } catch (error) {
-    throw new Error(`Error fetching all posts: ${error.message}`);
-  }
+	return getPostsByCategory('general');
 };
+
 
 const getPostsByCategory = async (category) => {
 	try {
-		return await Post.find({ category }).populate('user');
-	} catch (error) {
-		throw new Error(`Error fetching posts by category: ${error.message}`);
-	}
+		const populatedPosts = await Post.find({ category }).populate('user');
+
+		const posts = populatedPosts.map((post: IPost) => {
+			const user = post.user as IUser;
+			return {
+				postId: post._id,
+				username: user.username,
+				title: post.title,
+				content: post.content,
+				createdAt: post.createdAt,
+				updatedAt: post.updatedAt,
+				likes: post.likes,
+				dislikes: post.dislikes,
+				comments: post.comments,
+			};
+		});
+
+    return posts;
+  } catch (error) {
+    throw new Error(`Error fetching posts: ${error.message}`);
+  }
 };
 
 const getPost = async (postId) => {
@@ -72,7 +86,7 @@ const deletePost = async (postId) => {
 
 
 export default {
-  getAllPosts,
+	getAllPosts,
 	getPostsByCategory,
   getPost,
   createPost,

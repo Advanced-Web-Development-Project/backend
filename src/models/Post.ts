@@ -1,9 +1,10 @@
 import { model, Schema, Types } from 'mongoose';
 import { IComment } from './Comment';
+import { IUser } from './User';
 
 export interface IPost {
   _id?: Types.ObjectId;
-  user: Types.ObjectId;
+  user: Types.ObjectId | IUser;
   title: string;
   content: string;
   imagePath?: string; // Posts may not have an image, default image will be used
