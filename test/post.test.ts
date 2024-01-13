@@ -26,7 +26,7 @@ describe('post API Test', () => {
 
     expect(res.statusCode).toEqual(201); // 201 for successful creation
     expect(res.body.data.imagePath).toEqual(postData.imagePath);
-		createdPosts.push(res.body.data._id);
+		createdPosts.push(res.body.data.postId);
   });
 
   it('should create a new post without image and use default image', async () => {
@@ -40,7 +40,7 @@ describe('post API Test', () => {
     expect(res.body.data.imagePath).toEqual(
       'images/default/default-post-image.png'
     );
-		createdPosts.push(res.body.data._id);
+		createdPosts.push(res.body.data.postId);
   });
 
 	it('should get all posts', async () => {

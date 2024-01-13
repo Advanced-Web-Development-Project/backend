@@ -65,7 +65,7 @@ const createPost = async (req: Request, res: Response) => {
     // add post fields that are not in the request body
     postData.user = req.user._id;
     if (req.file) {
-			// remove the 'public' and '\' part of the path so that it is stored in the database as 'images\image.jpg'
+			// remove the 'public' and '\' part of the path so that it is stored y the database as 'images\image.jpg'
       postData.imagePath = req.file.path.split('\\').slice(2).join('\\'); 
     }
     const newPost = await postService.createPost(req.user._id, postData);

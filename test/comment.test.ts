@@ -36,14 +36,15 @@ describe('Comments API test', () => {
 		const postResponse1 = await request(app).post('/posts').set('Authorization', `Bearer ${tokens[0]}`).send(generatedPostData[0]);
 		const postResponse2 = await request(app).post('/posts').set('Authorization', `Bearer ${tokens[1]}`).send(generatedPostData[1]);
 
-		postIds.push(postResponse1.body.data._id);
-		postIds.push(postResponse2.body.data._id);
+		postIds.push(postResponse1.body.data.postId);
+		postIds.push(postResponse2.body.data.postId);
 
 	});
 
 	it('should create a comment', async () => {
 		const commentData = generator.generateValidCommentData();
 		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
+		console.log(res.body);
 		expect(res.statusCode).toEqual(201);
 
 		// get the comment and make sure that it has the correct content
