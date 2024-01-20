@@ -189,16 +189,16 @@ const seedDb = async () => {
   }
 
   for (const post of posts) {
-    console.log(`Creating comments for post ${post._id}...`);
+    console.log(`Creating comments for post ${post.postId}...`);
     for (const user of users) {
-      await createComment(user.token, post._id);
-      await createComment(user.token, post._id);
+      await createComment(user.token, post.postId);
+      await createComment(user.token, post.postId);
 
       // Randomly decide to like or dislike
       if (Math.random() < 0.5) {
-        await likePost(user.token, post._id);
+        await likePost(user.token, post.postId);
       } else {
-        await dislikePost(user.token, post._id);
+        await dislikePost(user.token, post.postId);
       }
     }
   }
