@@ -96,9 +96,21 @@ const deleteUser = async (req: Request, res: Response) => {
 	}
 };
 
+const getUserInfo = async (req: Request, res: Response) => {
+	try {
+		const user = await userService.getUserById(req.user._id);
+		const response = new HttpResponse().withStatusCode(200).withData(user).build();
+		return res.status(200).json(response);
+	} catch (error) {
+		const response = new HttpResponse().withStatusCode(500).addError(`Error while trying to get user info: ${error.message}`).build();
+		return res.status(500).json(response);
+	}
+};
+
 export default {
 	getAllUsers,
   getUserByUsername,
   updateUser,
   deleteUser,
+	getUserInfo,
 };

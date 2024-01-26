@@ -21,6 +21,8 @@ const router = Router();
  */
 router.get('/', userController.getAllUsers);
 
+router.get('/me', requireJwtAuth, userController.getUserInfo);
+
 /**
  * @swagger
  * /users/{username}:
@@ -118,7 +120,6 @@ router.patch('/:username', requireJwtAuth, [upload.single("avatar"), multerError
  *         description: Internal Server Error
  */
 router.delete('/:id', requireJwtAuth, userController.deleteUser);
-
 
 
 export default router;

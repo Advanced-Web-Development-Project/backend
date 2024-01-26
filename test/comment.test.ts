@@ -44,7 +44,6 @@ describe('Comments API test', () => {
 	it('should create a comment', async () => {
 		const commentData = generator.generateValidCommentData();
 		const res = await request(app).post(`/posts/${postIds[0]}/comments`).set('Authorization', `Bearer ${tokens[0]}`).send(commentData);
-		console.log(res.body);
 		expect(res.statusCode).toEqual(201);
 
 		// get the comment and make sure that it has the correct content
