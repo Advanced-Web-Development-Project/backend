@@ -112,4 +112,13 @@ const refreshToken = async (req: Request, res: Response) => {
 	res.status(200).json(response);
 };
 
-export default { login, register, logout, refreshToken };
+const loginWithGoogle = async (req: Request, res: Response) => {
+	// generate the tokens and send them back, then redirect to the frontend
+	const accessToken = req.user.generateJWT();
+	const refreshToken = req.user.generateRefreshToken();
+	res.cookie('accessToken', accessToken);
+	res.cookie('refreshToken', refreshToken);
+	res.redirect(process.env.CLIENT_URL_DEV);
+};
+
+export default { login, register, logout, refreshToken, loginWithGoogle };
