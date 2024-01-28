@@ -34,12 +34,15 @@ describe('Users API test', () => {
 		tokens.push(res1.body.data.accessToken);
 		tokens.push(res2.body.data.accessToken);
 		tokens.push(res3.body.data.accessToken);
+
+		// create "deletedUser"
+		await request(app).post('/auth/register').send(generator.genereateDeletedUser());
 	});
 
 	it('should get all users', async () => {
 		const res = await request(app).get('/users');
 		expect(res.statusCode).toEqual(200);
-		expect(res.body.data).toHaveLength(3);
+		expect(res.body.data).toHaveLength(4);
 	});
 
 	it('should get a user by username', async () => {
@@ -87,7 +90,7 @@ describe('Users API test', () => {
 		// check that only 2 users are left from the original 3
 		const res3 = await request(app).get('/users');
 		expect(res3.statusCode).toEqual(200);
-		expect(res3.body.data).toHaveLength(2);
+		expect(res3.body.data).toHaveLength(3);
 	});
 
 	it('should not delete a user if the user is not the same user requesting the delete', async () => {
@@ -98,10 +101,10 @@ describe('Users API test', () => {
 		const res2 = await request(app).get(`/users/${generatedUserData[0].username}`);
 		expect(res2.statusCode).toEqual(200);
 
-		// check that still there are only 2 users
+		// check that still there are only 3 users
 		const res3 = await request(app).get('/users');
 		expect(res3.statusCode).toEqual(200);
-		expect(res3.body.data).toHaveLength(2);
+		expect(res3.body.data).toHaveLength(3);
 	});
 
 	it('should not delete a user if the user does not exist', async () => {
@@ -109,10 +112,10 @@ describe('Users API test', () => {
 		const res = await request(app).delete(`/users/${userIds[2]}`).set('Authorization', `Bearer ${tokens[2]}`);
 		expect(res.statusCode).toEqual(401);
 
-		// check that still there are only 2 users
+		// check that still there are only 3 users
 		const res2 = await request(app).get('/users');
 		expect(res2.statusCode).toEqual(200);
-		expect(res2.body.data).toHaveLength(2);
+		expect(res2.body.data).toHaveLength(3);
 	});
 
 });

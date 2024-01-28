@@ -24,6 +24,13 @@ const generateDuplicateUsernameUserData = (existingUser) => ({
 	username: existingUser.username,
 });
 
+const genereateDeletedUser = () => ({
+		email: 'deletedUser@gmail.com',
+		password: 'deletedUser',
+		username: 'deletedUser',
+		name: 'deletedUser'
+	});
+
 
 
 // POST DATA GENERATORS
@@ -54,6 +61,7 @@ export default {
   generateInvalidEmailUserData,
   generateDuplicateEmailUserData,
 	generateDuplicateUsernameUserData,
+	genereateDeletedUser,
 	generateValidPostData,
 	generateValidPostDataWithoutImage,
 	generateValidCommentData,

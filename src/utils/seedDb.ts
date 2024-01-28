@@ -156,6 +156,19 @@ const createAPIusers = async () => {
   console.log('Created scienceNews user');
 };
 
+const createDeletedUser = async () => {
+	const userData = {
+		email: 'deletedUser@gmail.com',
+		password: 'deletedUser',
+		username: 'deletedUser',
+		name: 'deletedUser'
+	}
+
+	await registerUser(userData);
+	console.log('Created deletedUser');
+};
+
+
 const seedDb = async () => {
   startServer();
   await sleep(7000);
@@ -205,6 +218,7 @@ const seedDb = async () => {
 
   await createTest123user();
   await createAPIusers();
+	await createDeletedUser();
 
 	await newsGenerator.run();
 

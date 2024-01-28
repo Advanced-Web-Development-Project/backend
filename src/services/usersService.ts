@@ -1,3 +1,4 @@
+import Post from '../models/Post';
 import User, { IUser } from '../models/User';
 import jwt from 'jsonwebtoken';
 
@@ -27,6 +28,8 @@ const getAllUsers = async () => {
 };
 
 const deleteUserById = async (userId) => {
+	const deletedUser = await getUserByUsername("deletedUser");
+	await Post.updateMany({ user: userId }, { $set: { user: deletedUser._id }});
 	const user = await User.findByIdAndDelete(userId);
 	return user;
 };
