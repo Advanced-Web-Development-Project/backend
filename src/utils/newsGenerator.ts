@@ -1,5 +1,6 @@
 import axios from 'axios';
 import FormData from 'form-data';
+import Post from '../models/Post';
 
 async function refreshTopHeadlinesNews(category: string) {
   try {
@@ -58,7 +59,8 @@ const run = async () => {
 	const categories = ['sports', 'science', 'technology'];
 	// const categories = ['sports'];
 	for (const category of categories) {
-		await refreshTopHeadlinesNews(category);
+		Post.deleteMany({ category }).then(() => console.log(`Deleted old posts for ${category}`));
+		refreshTopHeadlinesNews(category).then(() => console.log(`Refreshed news for ${category}`));
 	}
 }
 
