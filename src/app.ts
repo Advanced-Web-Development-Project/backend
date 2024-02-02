@@ -58,14 +58,14 @@ if (require.main === module) {
   startServer();
 
 	// Schedule the task for every minute for testing
-  cron.schedule('*/1 * * * *', () => {
+  // cron.schedule('*/1 * * * *', () => {
+  //   console.log('Running the news refresh task...');
+  //   newsGenerator.run();
+  // });
+
+  // Schedule the task for every 12 hours for production
+  cron.schedule('0 */12 * * *', () => {
     console.log('Running the news refresh task...');
     newsGenerator.run();
   });
-
-  // Uncomment the following line and comment out the above schedule to run it every 24 hours in production
-  // cron.schedule('0 0 * * *', () => {
-  //   console.log('Running the news refresh task...');
-  //   newsRefresh.run();
-  // });
 }

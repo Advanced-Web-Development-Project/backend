@@ -68,13 +68,11 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 // TODO: implement logout
-const logout = (req: Request, res: Response) => {
-  const response = new HttpResponse()
-    .withStatusCode(200)
-    .withMessage('Logged out successfully')
-    .build();
-
-  res.status(200).json(response);
+const logout = (req: Request, res: Response, next: NextFunction) => {
+	req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
 };
 
 const refreshToken = async (req: Request, res: Response) => {
