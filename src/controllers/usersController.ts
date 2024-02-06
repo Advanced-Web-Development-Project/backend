@@ -107,10 +107,26 @@ const getUserInfo = async (req: Request, res: Response) => {
 	}
 };
 
+const deleteUserPhoto = async (req: Request, res: Response) => {
+	try {
+		if (req.user.avatar == "images/default/default-avatar.png") {
+			const response = new HttpResponse().withStatusCode(400).addError("User does not have a photo").build();
+			return res.status(400).json(response);
+		}
+		await userService.deleteUserPhoto(req.user._id);
+		const response = new HttpResponse().withStatusCode(200).withMessage("User photo has been deleted").build();
+		return res.status(200).json(response);
+	} catch (error) {
+		const response = new HttpResponse().withStatusCode(500).addError(`Error while trying to delete user photo: ${error.message}`).build();
+		return res.status(500).json(response);
+	}
+};
+
 export default {
 	getAllUsers,
   getUserByUsername,
   updateUser,
   deleteUser,
 	getUserInfo,
+	deleteUserPhoto
 };

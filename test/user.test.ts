@@ -173,4 +173,25 @@ describe('Users API test', () => {
 			.send({ username: generatedUserData[1].username });
 		expect(res2.statusCode).toEqual(400);
 	});
+
+	it(`should delete the user's photo and set the user's avatar to default avatar`, async () => {
+		// update user's photo, then try to delete it
+		const res = await request(app)
+			.patch(`/users/${generatedUserData[0].username}`)
+			.set('Authorization', `Bearer ${tokens[0]}`)
+			.send(generator.generateUserDataWithAvatar());
+		expect(res.statusCode).toEqual(200);
+
+		const res2 = await request(app)
+			.delete('/users/avatar')
+			.set('Authorization', `Bearer ${tokens[0]}`);
+		expect(res2.statusCode).toEqual(200);
+	});
+
+	it(`should not delete the user's photo if the user does not have a photo`, async () => {
+		const res = await request(app)
+			.delete('/users/avatar')
+			.set('Authorization', `Bearer ${tokens[0]}`);
+		expect(res.statusCode).toEqual(400);
+	});
 });

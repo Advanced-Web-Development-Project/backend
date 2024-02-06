@@ -92,6 +92,9 @@ router.get('/:username', userController.getUserByUsername);
  */
 router.patch('/:username', requireJwtAuth, [upload.single("avatar"), multerErrorHandler], userController.updateUser);
 
+
+router.delete('/avatar', requireJwtAuth, userController.deleteUserPhoto)
+
 /**
  * @swagger
  * /users/{id}:
@@ -120,6 +123,5 @@ router.patch('/:username', requireJwtAuth, [upload.single("avatar"), multerError
  *         description: Internal Server Error
  */
 router.delete('/:id', requireJwtAuth, userController.deleteUser);
-
 
 export default router;

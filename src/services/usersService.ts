@@ -69,6 +69,15 @@ const getUserByRefreshToken = async (refreshToken: string) => {
 	return user;
 };
 
+const deleteUserPhoto = async (userId) => {
+	// delete the user's photo and set the user's avatar to default avatar
+	const user = await getUserById(userId);
+	if (user.avatar !== "images/default/default-avatar.png") {
+		user.avatar = "images/default/default-avatar.png";
+		await user.save();
+	}
+};
+
 export default {
   createUser,
   getUserById,
@@ -78,4 +87,5 @@ export default {
 	deleteUserById,
 	updateUser,
 	getUserByRefreshToken,
+	deleteUserPhoto
 };

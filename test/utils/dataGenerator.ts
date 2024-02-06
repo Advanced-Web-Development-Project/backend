@@ -31,6 +31,11 @@ const genereateDeletedUser = () => ({
 		name: 'deletedUser'
 	});
 
+	const generateUserDataWithAvatar = () => ({
+		...generateValidUserData(),
+		avatar: faker.image.urlPlaceholder({format: 'png'}),
+	});
+
 
 
 // POST DATA GENERATORS
@@ -60,6 +65,7 @@ export default {
   generateDuplicateEmailUserData,
 	generateDuplicateUsernameUserData,
 	genereateDeletedUser,
+	generateUserDataWithAvatar,
 	generateValidPostData,
 	generateValidPostDataWithoutImage,
 	generateValidCommentData,
