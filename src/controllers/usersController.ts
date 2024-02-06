@@ -113,8 +113,8 @@ const deleteUserPhoto = async (req: Request, res: Response) => {
 			const response = new HttpResponse().withStatusCode(400).addError("User does not have a photo").build();
 			return res.status(400).json(response);
 		}
-		await userService.deleteUserPhoto(req.user._id);
-		const response = new HttpResponse().withStatusCode(200).withMessage("User photo has been deleted").build();
+		const user = await userService.deleteUserPhoto(req.user._id);
+		const response = new HttpResponse().withStatusCode(200).withMessage("User photo has been deleted").withData(user).build();
 		return res.status(200).json(response);
 	} catch (error) {
 		const response = new HttpResponse().withStatusCode(500).addError(`Error while trying to delete user photo: ${error.message}`).build();
