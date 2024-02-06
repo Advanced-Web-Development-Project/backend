@@ -54,8 +54,6 @@ const generateInvalidCommentData = () => ({
 	content: '', // Empty string
 });
 
-
-
 export default {
   generateValidUserData,
   generateInvalidEmailUserData,

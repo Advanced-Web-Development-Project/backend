@@ -13,7 +13,7 @@ const passportLogin = new PassportLocalStrategy(
     try {
       const user = await User.findOne({ email: email.trim() });
       if (!user) {
-        return done(null, false, 'This email is not registered');
+        return done(null, false, 'email or password is incorrect');
       }
 
       user.comparePassword(password, function (err, isMatch) {
@@ -21,7 +21,7 @@ const passportLogin = new PassportLocalStrategy(
 					return done(err);
 				
         if (!isMatch)
-          return done(null, false, 'Incorrect password');
+          return done(null, false, 'email or password is incorrect');
 
         return done(null, user);
       });

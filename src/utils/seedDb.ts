@@ -11,7 +11,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const registerUser = async (userData) => {
   try {
     const response = await axios.post(
-      'http://localhost:8000/auth/register',
+      `${process.env.SERVER_URL_DEV}/auth/register`,
       userData,
       {
         headers: {
@@ -31,7 +31,7 @@ const registerUser = async (userData) => {
 const loginUser = async (userData) => {
   try {
     const response = await axios.post(
-      'http://localhost:8000/auth/login',
+      `${process.env.SERVER_URL_DEV}/auth/login`,
       userData,
       {
         headers: {
@@ -48,7 +48,7 @@ const loginUser = async (userData) => {
 const createPost = async (token) => {
   try {
     const postData = dataGenerator.generateValidPostDataWithoutImage();
-    const response = await axios.post('http://localhost:8000/posts', postData, {
+    const response = await axios.post(`${process.env.SERVER_URL_DEV}/posts`, postData, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -64,7 +64,7 @@ const createComment = async (token, postId) => {
   try {
     const commentData = dataGenerator.generateValidCommentData();
     const response = await axios.post(
-      `http://localhost:8000/posts/${postId}/comments`,
+      `${process.env.SERVER_URL_DEV}/posts/${postId}/comments`,
       commentData,
       {
         headers: {
@@ -83,7 +83,7 @@ const createComment = async (token, postId) => {
 const likePost = async (token, postId) => {
   try {
     const response = await axios.patch(
-      `http://localhost:8000/posts/${postId}/like`,
+      `${process.env.SERVER_URL_DEV}/posts/${postId}/like`,
       {},
       {
         headers: {
@@ -102,7 +102,7 @@ const likePost = async (token, postId) => {
 const dislikePost = async (token, postId) => {
   try {
     const response = await axios.patch(
-      `http://localhost:8000/posts/${postId}/dislike`,
+      `${process.env.SERVER_URL_DEV}/posts/${postId}/dislike`,
       {},
       {
         headers: {

@@ -26,7 +26,6 @@ const getAllPosts = async (req: Request, res: Response) => {
       .withStatusCode(500)
       .addError('Server Error - get all posts')
       .build();
-
     res.status(500).json(response);
   }
 };

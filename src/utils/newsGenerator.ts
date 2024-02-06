@@ -19,7 +19,7 @@ async function refreshTopHeadlinesNews(category: string) {
       email: `${category}News@gmail.com`,
       password: `${category}News`,
     };
-    const loginResponse = await axios.post('http://localhost:8000/auth/login', loginData);
+    const loginResponse = await axios.post(`${process.env.SERVER_URL_DEV}/auth/login`, loginData);
     const token = loginResponse.data.data.accessToken;
 
 		console.log('fetched articles and logged in user, now creating posts')
@@ -40,7 +40,7 @@ async function refreshTopHeadlinesNews(category: string) {
         formData.append('image', image, 'image.jpg');
 				formData.append('category', category);
 
-        await axios.post('http://localhost:8000/posts', formData, {
+        await axios.post(`${process.env.SERVER_URL_DEV}/posts`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,

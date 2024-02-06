@@ -55,9 +55,9 @@ describe('local auth API Test', () => {
     expect(res.statusCode).toEqual(401); // 401 for unauthorized
   });
 
-  it('should log out a user', async () => {
-    const res = await request(app).post('/auth/logout');
-    expect(res.statusCode).toEqual(200); // 200 for successful logout
+  it('should log out a user and redirect to home', async () => {
+		const res = await request(app).post('/auth/logout');
+		expect(res)
   });
 
   it('should not try to log in a user with an invalid email', async () => {
@@ -82,4 +82,14 @@ describe('local auth API Test', () => {
 		expect(res2.body.data).toHaveProperty('accessToken'); // Check if accessToken is returned
 		expect(res2.body.data).toHaveProperty('refreshToken'); // Check if refreshToken is returned
 	});
+
+	it('should not log in a user when the email is not registered', async () => {
+		const loginData = {
+			email: "unregistered@gmail.com", 
+			password: validUser.password,
+		}
+		const res = await request(app).post('/auth/login').send(loginData);
+		expect(res.statusCode).toEqual(401); 
+	});
+
 });

@@ -67,7 +67,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// TODO: implement logout
 const logout = (req: Request, res: Response, next: NextFunction) => {
 	req.logout(function(err) {
     if (err) { return next(err); }

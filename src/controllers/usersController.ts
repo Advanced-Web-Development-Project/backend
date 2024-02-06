@@ -63,8 +63,8 @@ const updateUser = async (req: Request, res: Response) => {
 		const response = new HttpResponse().withStatusCode(200).withMessage("User has been updated successfully").withData(user).build();
 		return res.status(200).json(response);
 	} catch (error) {
-		const response = new HttpResponse().withStatusCode(500).addError(`Error while trying to update user: ${error.message}`).build();
-		return res.status(500).json(response);
+		const response = new HttpResponse().withStatusCode(400).addError(`Error while trying to update user: ${error.message}`).build();
+		return res.status(400).json(response);
 	}
 
 };
