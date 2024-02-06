@@ -45,8 +45,8 @@ const startServer = () => {
   const dbURI = process.env.MONGODB_URI;
   mongoose
     .connect(dbURI)
-    .then(() => app.listen(8000))
-		.then(() => console.log('Server running on port 8000'))
+    .then(() => app.listen(`${process.env.PORT}`))
+		.then(() => console.log(`Server running on port ${process.env.PORT}`))
     .catch((err) => console.log(err));
 };
 
