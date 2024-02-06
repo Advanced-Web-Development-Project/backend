@@ -8,7 +8,8 @@
     "start": "tsc && node dist/src/app.js",
     "lint": "eslint . --ext .ts",
     "dev": "nodemon --exec ts-node src/app.ts",
-    "seed": "tsc && node dist/src/utils/seedDb.js"
+    "seed": "tsc && node dist/src/utils/seedDb.js",
+		"prod": "cp .envprod .env && tsc -p tsconfig_prod.json && pm2 restart ecosystem.config.js --env production"
   },
   "keywords": [],
   "author": "",
