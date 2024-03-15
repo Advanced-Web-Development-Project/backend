@@ -88,6 +88,7 @@ const createPost = async (req: Request, res: Response) => {
       .withStatusCode(400)
       .addError(errorMessages)
       .build();
+			console.log(response)
     return res.status(400).json(response);
   }
 

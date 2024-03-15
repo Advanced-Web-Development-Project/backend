@@ -1,13 +1,13 @@
 import multer from 'multer';
-// import { resolve } from 'path';
+import { resolve } from 'path';
 
 // Define the storage for multer. This determines how the uploaded files are stored.
 // In this case, the files are stored on disk in the 'public/images' directory.
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-		// absolute path, we might use for production
-    // cb(null, resolve(__dirname, '../../../public/images')); 
-		cb(null, 'public/images'); // relative path, we use for development
+    // absolute path, we might use for production
+    cb(null, resolve(__dirname, '../../../../public/images'));
+    // cb(null, 'public/images'); // relative path, we use for development
   },
   filename: function (req, file, cb) {
     // Split the original file name by '.' to get the file extension.
@@ -35,7 +35,7 @@ const imageFilter = (req, file: Express.Multer.File, cb) => {
   }
 };
 
-// Define the multer instance. 
+// Define the multer instance.
 // This is the middleware that will be used to handle the file upload.
 // We give it the storage and the fileFilter we defined above, and limit the file size to 5MB.
 const upload = multer({
